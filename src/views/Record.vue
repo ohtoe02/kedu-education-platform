@@ -6,9 +6,23 @@
 
     <Loader v-if="loading"/>
 
-    <p class="center" v-else-if="!categories.length">Категорий пока нет. <router-link to="/categories">Добавить новую категорию</router-link></p>
+    <p class="center" v-else-if="!categories.length">Коллекций пока нет. <router-link to="/categories">Добавить новую коллекцию</router-link></p>
 
     <form v-else @submit.prevent="createRecord" class="form">
+      <div class="input-field">
+        <input
+            :class="{invalid: v$.description.$dirty && v$.description.required.$invalid}"
+            id="description"
+            type="text"
+            v-model="description"
+        >
+        <label for="description">Название</label>
+        <span
+            class="helper-text invalid"
+            v-if="v$.description.$dirty && v$.description.required.$invalid"
+        >Введите название записи</span>
+      </div>
+
       <div class="input-field" >
         <select ref="select" v-model="category">
           <option
@@ -17,7 +31,53 @@
               :value="c.id"
           >{{ c.title }}</option>
         </select>
-        <label>Выберите категорию</label>
+        <label>Выберите коллекцию</label>
+      </div>
+
+<!--      <div class="input-field">-->
+<!--        <input-->
+<!--            :class="{invalid: (v$.amount.$dirty && v$.amount.required.$invalid) || (v$.amount.$dirty && v$.amount.minValue.$invalid)}"-->
+<!--            id="amount"-->
+<!--            type="number"-->
+<!--            v-model.number="amount"-->
+<!--        >-->
+<!--        <label for="amount">Сумма</label>-->
+<!--        <span-->
+<!--            class="helper-text invalid"-->
+<!--            v-if="v$.amount.$dirty && v$.amount.minValue.$invalid"-->
+<!--        >Сумма не может быть меньше {{v$.amount.minValue.$params.min}}</span>-->
+<!--        <span-->
+<!--            class="helper-text invalid"-->
+<!--            v-if="v$.amount.$dirty && v$.amount.required.$invalid"-->
+<!--        >Введите сумму</span>-->
+<!--      </div>-->
+
+      <div class="input-field">
+        <div class="file-field input-field">
+          <div class="btn light-blue">
+            <span>Выбрать файл</span>
+            <input
+                ref="file"
+                @change="handleFileUpload"
+                type="file"
+                accept="video/mp4, video/x-m4v, video/*"
+            >
+          </div>
+          <div class="file-path-wrapper">
+            <input
+                id="text-file"
+                class="file-path validate"
+                type="text"
+                :value="currentFile ? currentFile.name : undefined"
+                placeholder="Загрузите ваш видео-урок"
+                :class="{invalid: (v$.currentFile.$dirty && v$.currentFile.required.$invalid), valid: currentFile}"
+            >
+            <span
+                class="helper-text invalid"
+                v-if="v$.currentFile.$dirty && v$.currentFile.required.$invalid"
+            >Добавьте видео-урок</span>
+          </div>
+        </div>
       </div>
 
       <p>
@@ -26,10 +86,10 @@
               class="with-gap"
               name="type"
               type="radio"
-              value="income"
+              value="private"
               v-model="type"
           />
-          <span>Доход</span>
+          <span>Приватно</span>
         </label>
       </p>
 
@@ -39,46 +99,14 @@
               class="with-gap"
               name="type"
               type="radio"
-              value="outcome"
+              value="public"
               v-model="type"
           />
-          <span>Расход</span>
+          <span>Публично</span>
         </label>
       </p>
 
-      <div class="input-field">
-        <input
-            :class="{invalid: (v$.amount.$dirty && v$.amount.required.$invalid) || (v$.amount.$dirty && v$.amount.minValue.$invalid)}"
-            id="amount"
-            type="number"
-            v-model.number="amount"
-        >
-        <label for="amount">Сумма</label>
-        <span
-            class="helper-text invalid"
-            v-if="v$.amount.$dirty && v$.amount.minValue.$invalid"
-        >Сумма не может быть меньше {{v$.amount.minValue.$params.min}}</span>
-        <span
-            class="helper-text invalid"
-            v-if="v$.amount.$dirty && v$.amount.required.$invalid"
-        >Введите сумму</span>
-      </div>
-
-      <div class="input-field">
-        <input
-            :class="{invalid: v$.description.$dirty && v$.description.required.$invalid}"
-            id="description"
-            type="text"
-            v-model="description"
-        >
-        <label for="description">Описание</label>
-        <span
-            class="helper-text invalid"
-            v-if="v$.description.$dirty && v$.description.required.$invalid"
-        >Введите название записи</span>
-      </div>
-
-      <button class="btn waves-effect waves-light" type="submit">
+      <button class="btn waves-effect waves-light light-blue" type="submit">
         Создать
         <i class="material-icons right">send</i>
       </button>
@@ -104,15 +132,16 @@ export default {
       select: null,
       categories: [],
       category: null,
-      type: 'outcome',
-      amount: 1,
-      description: ''
+      type: 'private',
+      // amount: 1,
+      description: '',
+      currentFile: null
     }
   },
   computed: {
     ...mapGetters(['info']),
     canCreateRecord() {
-      if (this.type === 'income')
+      if (this.type === 'private')
         return true
 
       return this.info.bill >= this.amount
@@ -125,30 +154,32 @@ export default {
         return
       }
 
-      if (this.canCreateRecord) {
-        try {
-          await this.$store.dispatch('createRecord', {
-          categoryId: this.category,
-          amount: this.amount,
-          description: this.description,
-          type: this.type,
-          date: new Date().toJSON()
-        })
-          const bill = this.type === 'income'
-              ? this.info.bill + this.amount
-              : this.info.bill - this.amount
 
-          await this.$store.dispatch('updateInfo', {bill})
-          this.$message('Запись была успешно добавлена')
-          this.v$.$reset()
-          this.amount = 1;
-          this.description = ''
-        } catch (e) {}
-      } else {
-        this.$message(`Недостаточно средств на счете (${this.amount - this.info.bill})`)
-      }
+      try {
+        const videoRef = await this.$store.dispatch('uploadFile', {path: 'records', file: this.currentFile})
+        await this.$store.dispatch('createRecord', {
+        categoryId: this.category,
+        // amount: this.amount,
+        description: this.description,
+        type: this.type,
+        videoURL: videoRef,
+        date: new Date().toJSON()
+      })
+        // const bill = this.type === 'private'
+        //     ? this.info.bill + this.amount
+        //     : this.info.bill - this.amount
 
-    }
+        // await this.$store.dispatch('updateInfo', {bill})
+        this.$message('Запись была успешно добавлена')
+        this.v$.$reset()
+        // this.amount = 1;
+        this.description = ''
+        this.currentFile = null
+      } catch (e) {}
+    },
+    handleFileUpload(event) {
+      this.currentFile = event.target.files[0]
+    },
   },
   async mounted() {
     this.categories = await this.$store.dispatch('fetchCategories');
@@ -157,7 +188,6 @@ export default {
     if (this.categories.length) {
       this.category = this.categories[0].id
     }
-
 
     setTimeout(() => {M.updateTextFields(); this.select = M.FormSelect.init(this.$refs.select)}, 0)
   },
@@ -168,7 +198,8 @@ export default {
   },
   validations: {
     description: { required },
-    amount: { minValue: minValue(1), required }
+    // amount: { minValue: minValue(1), required },
+    currentFile: {required}
   },
 }
 

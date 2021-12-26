@@ -1,7 +1,11 @@
 <template >
-  <div class="video-container">
-    <iframe :width="width" :height="height" :src="url" title="YouTube video player" frameborder="0" allow="autoplay" allowfullscreen></iframe>
-  </div>
+<!--  <div class="video-container">-->
+<!--    <iframe :width="width" :height="height" :src="url" title="YouTube video player" frameborder="0" allow="autoplay" allowfullscreen></iframe>-->
+<!--  </div>-->
+
+  <video class="responsive-video video-player" controls>
+    <source :src="videoURL" type="video/mp4">
+  </video>
 </template >
 
 <script >

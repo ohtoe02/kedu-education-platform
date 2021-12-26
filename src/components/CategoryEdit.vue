@@ -31,23 +31,23 @@
           >Введите название категории</span>
         </div>
 
-        <div class="input-field">
-          <input
-              id="limit"
-              type="number"
-              v-model="limit"
-              :class="{invalid: (v$.limit.$dirty && v$.limit.required.$invalid) || (v$.limit.$dirty && v$.limit.minValue.$invalid)}"
-          >
-          <label for="limit">Лимит</label>
-          <span
-              class="helper-text invalid"
-              v-if="v$.limit.$dirty && v$.limit.minValue.$invalid"
-          >Лимит не может быть меньше {{v$.limit.minValue.$params.min}}</span>
-          <span
-              class="helper-text invalid"
-              v-if="v$.limit.$dirty && v$.limit.required.$invalid"
-          >Введите лимит</span>
-        </div>
+<!--        <div class="input-field">-->
+<!--          <input-->
+<!--              id="limit"-->
+<!--              type="number"-->
+<!--              v-model="limit"-->
+<!--              :class="{invalid: (v$.limit.$dirty && v$.limit.required.$invalid) || (v$.limit.$dirty && v$.limit.minValue.$invalid)}"-->
+<!--          >-->
+<!--          <label for="limit">Лимит</label>-->
+<!--          <span-->
+<!--              class="helper-text invalid"-->
+<!--              v-if="v$.limit.$dirty && v$.limit.minValue.$invalid"-->
+<!--          >Лимит не может быть меньше {{v$.limit.minValue.$params.min}}</span>-->
+<!--          <span-->
+<!--              class="helper-text invalid"-->
+<!--              v-if="v$.limit.$dirty && v$.limit.required.$invalid"-->
+<!--          >Введите лимит</span>-->
+<!--        </div>-->
 
         <button class="btn waves-effect blue waves-light" type="submit">
           Обновить
@@ -77,13 +77,13 @@ export default {
     return {
       select: null,
       title: '',
-      limit: 100,
+      // limit: 100,
       currentCat: null
     }
   },
   validations: {
     title: { required },
-    limit: { minValue: minValue(100), required }
+    // limit: { minValue: minValue(100), required }
   },
   methods: {
     async editCategory() {
@@ -97,7 +97,7 @@ export default {
         const categoryData = {
           id: this.currentCat,
           title: this.title,
-          limit: this.limit
+          // limit: this.limit
         }
         await this.$store.dispatch('updateCategory', categoryData)
         this.$message('Категория была обновлена')
@@ -120,14 +120,14 @@ export default {
 
     this.currentCat = id;
     this.title = title;
-    this.limit = limit;
+    // this.limit = limit;
 
   },
   watch: {
     currentCat(catID) {
       const {title, limit} = this.categories.find(c => c.id === catID);
       this.title = title;
-      this.limit = limit
+      // this.limit = limit
     }
   }
 }

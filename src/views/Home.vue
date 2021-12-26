@@ -39,12 +39,17 @@ export default {
   methods: {
     async refresh() {
       this.loading = true
-      this.currency = await this.$store.dispatch('fetchCurrency')
+      // this.currency = await this.$store.dispatch('fetchCurrency')
       this.loading = false
     },
   },
   async mounted() {
-    this.currency = await this.$store.dispatch('fetchCurrency')
+    const role = await this.$store.dispatch('fetchRoleInfo')
+    if (true) {
+      this.$router.push('/planning')
+      return
+    }
+    // this.currency = await this.$store.dispatch('fetchCurrency')
     this.loading = false
   },
   components: {

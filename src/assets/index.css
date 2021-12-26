@@ -192,11 +192,62 @@ h5 {
     font-weight: bold;
 }
 
+.category h5 {
+    margin-bottom: 0.5rem;
+}
+
+.category .row {
+    margin-bottom: 0.5rem !important;
+}
+
 .card {
     border-radius: 0.5rem;
 }
 
-.video-container {
+.preview {
+    border: solid 2px #000000;
+    background-color: white;
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.3));
     border-radius: 1rem;
-    filter: drop-shadow(0 0 4px #000000);
+    max-height: 150px;
+    max-width: 400px;
+    float: right;
+}
+
+.category-preview {
+    border-radius: 1rem;
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.4));
+    max-height: 150px;
+    max-width: 400px !important;
+}
+
+.card-content {
+    padding: 0.5rem 1.5rem !important;
+}
+
+.category-text {
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+
+}
+
+.card-out {
+    left: 50%;
+    transform: translateX(-25%);
+    position: absolute;
+    align-content: center;
+}
+
+.video-player {
+    position: relative;
+    border-radius: 1rem;
+    filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.6));
+}
+
+.switch label input[type=checkbox]:checked + .lever {
+    background-color: #75d2ff;
+}
+
+.switch label input[type=checkbox]:checked + .lever:after {
+    background-color: #2b99c9;
 }

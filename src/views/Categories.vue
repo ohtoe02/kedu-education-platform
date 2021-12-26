@@ -1,20 +1,20 @@
 <template>
   <div>
     <div class="page-title">
-      <h3>Коллекции</h3>
+      <h3>Создать коллекцию</h3>
     </div>
     <section>
       <Loader v-if="loading"/>
-      <div class="row" v-else>
+      <div class="container" v-else>
         <CategoryCreate @created="addNewCategory"/>
 
-        <CategoryEdit
-          v-if="categories.length"
-          :key="categories.length + updateCount"
-          :categories="categories"
-          @updated="updateCategories"
-        />
-        <p v-else class="center">Коллекций пока нет</p>
+<!--        <CategoryEdit-->
+<!--          v-if="categories.length"-->
+<!--          :key="categories.length + updateCount"-->
+<!--          :categories="categories"-->
+<!--          @updated="updateCategories"-->
+<!--        />-->
+<!--        <p v-else class="center">Коллекций пока нет</p>-->
 
       </div>
     </section>

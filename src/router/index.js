@@ -33,7 +33,7 @@ const routes = [
     component: () => import('../views/Detail')
   },
   {
-    path: "/history",
+    path: "/history/:id",
     name: "history",
     meta: {layout: 'main', auth: true},
     component: () => import('../views/History')
@@ -51,7 +51,7 @@ const routes = [
     component: () => import('../views/Record')
   },
   {
-    path: "/watch/:id",
+    path: "/watch/:catId/:id",
     name: "watch",
     meta: {layout: 'main', auth: true},
     component: () => import('../views/Watch')

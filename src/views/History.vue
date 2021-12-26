@@ -1,7 +1,7 @@
 <template >
   <div>
     <div class="page-title">
-      <h3>Мои уроки</h3>
+      <h3>{{category ? category.title : 'Урок'}}</h3>
     </div>
 
     <Loader v-if="loading"/>
@@ -26,13 +26,17 @@ import paginationMixin from "@/mixins/pagination.mixin";
 
 export default {
   name: 'history',
+  props: ['key'],
   mixins: [paginationMixin],
   data: () => ({
     loading: true,
     records: [],
+    category: null
   }),
   async mounted() {
-    this.records = await this.$store.dispatch('fetchRecords')
+    const catId = this.$route.params.id
+    this.category = await this.$store.dispatch('fetchCategoryById', catId)
+    this.records = await this.$store.dispatch('fetchRecords', catId)
     const categories = await this.$store.dispatch('fetchCategories')
 
     this.setup(categories)
@@ -45,8 +49,8 @@ export default {
         return {
           ...record,
           categoryName: categories.find(c => c.id === record.categoryId).title,
-          typeClass: record.type === 'income' ? 'green' : 'red',
-          typeText: record.type === 'income' ? 'Доход' : 'Расход',
+          typeClass: record.type === 'public' ? 'green' : 'red',
+          typeText: record.type === 'public' ? 'Публично' : 'Приватно',
         }
       }))
     }

@@ -11,16 +11,16 @@ export default {
                 const uid = await dispatch('getUid')
                 const db = ref(getDatabase())
 
-                const category = await push(ref(getDatabase(), `users/${uid}/records`), record)
+                const category = await push(ref(getDatabase(), `users/${uid}/categories/${record.categoryId}/records`), record)
             } catch (e) {
                 commit('setError', e)
                 throw e
             }
         },
-        async fetchRecords({dispatch, commit}) {
+        async fetchRecords({dispatch, commit}, catId) {
             try {
                 const uid = await dispatch('getUid');
-                const records = (await get(child(ref(getDatabase()), `users/${uid}/records`))).val() || {};
+                const records = (await get(child(ref(getDatabase()), `users/${uid}/categories/${catId}/records`))).val() || {};
 
                 return Object.keys(records).map(key => ({...records[key], id: key}))
             } catch (e) {
@@ -28,10 +28,10 @@ export default {
                 throw e
             }
         },
-        async fetchRecordById({dispatch, commit}, id) {
+        async fetchRecordById({dispatch, commit}, {catId, id}) {
             try {
                 const uid = await dispatch('getUid');
-                const record = (await get(child(ref(getDatabase()), `users/${uid}/records/${id}`))).val() || {};
+                const record = (await get(child(ref(getDatabase()), `users/${uid}/categories/${catId}/records/${id}`))).val() || {};
 
                 return {...record, id}
             } catch (e) {
