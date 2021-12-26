@@ -181,3 +181,22 @@
 .submit {
     color: green;
 }
+
+p {
+    font-family: Roboto, sans-serif;
+}
+
+h5 {
+    margin: 0 0 1rem 0;
+    font-family: Roboto, sans-serif;
+    font-weight: bold;
+}
+
+.card {
+    border-radius: 0.5rem;
+}
+
+.video-container {
+    border-radius: 1rem;
+    filter: drop-shadow(0 0 4px #000000);
+}

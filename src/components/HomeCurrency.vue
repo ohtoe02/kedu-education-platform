@@ -18,7 +18,7 @@
           <tr v-for="cur in currencies" :key="cur">
             <td>{{ cur }}</td>
             <td>{{ rates[cur].toFixed(2) }}</td>
-            <td>{{ formatDate }}</td>
+            <td>{{  $filterDate(date, 'date') }}</td>
           </tr>
           </tbody>
         </table>
@@ -33,12 +33,6 @@ export default {
   data() {
     return {
       currencies: ['RUB', 'USD', 'EUR']
-    }
-  },
-  computed: {
-    formatDate() {
-      const options = {day: '2-digit', month: 'long', year: 'numeric'}
-      return new Intl.DateTimeFormat('ru-RU', options).format(new Date(this.date))
     }
   }
 }

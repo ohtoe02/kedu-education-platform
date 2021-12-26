@@ -41,7 +41,7 @@
     <div class="card-action">
       <div>
         <button
-          class="btn waves-effect waves-light auth-submit"
+          class="btn light-blue waves-effect waves-light auth-submit"
           type="submit"
         >
           <strong>Войти</strong>
@@ -51,7 +51,7 @@
 
       <p class="center">
         Нет аккаунта?
-        <router-link to="/register">Зарегистрироваться</router-link>
+        <router-link class="light-blue-text" to="/register">Зарегистрироваться</router-link>
       </p>
     </div>
   </form>

@@ -8,7 +8,7 @@
             v-for="cur in currencies"
             :key="cur"
             class="currency-line">
-          <span>{{ currencyFilter(getCurrency(cur), cur)}}</span>
+          <span>{{ this.$filterCurrency(getCurrency(cur), cur)}}</span>
         </p>
       </div>
     </div>
@@ -32,12 +32,6 @@ export default {
   methods: {
     getCurrency(currency) {
       return Math.floor(this.base * this.rates[currency])
-    },
-    currencyFilter(value, currency='RUB') {
-      return new Intl.NumberFormat('ru-RU', {
-        style: 'currency',
-        currency
-      }).format(value)
     }
   }
 }

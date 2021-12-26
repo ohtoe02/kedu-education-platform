@@ -1,11 +1,11 @@
 <template >
-  <nav class="navbar orange lighten-1">
+  <nav class="navbar light-blue accent-2">
     <div class="nav-wrapper">
       <div class="navbar-left">
         <a href="#" @click.prevent="$emit('toggleSidebar')">
           <i class="material-icons black-text">dehaze</i>
         </a>
-        <span class="black-text" style="cursor: pointer" @click="dateFormat.time = !dateFormat.time">{{ formatDate }}</span>
+        <span class="black-text" style="cursor: pointer" >{{ $filterDate(date, 'datetime') }}</span>
       </div>
 
       <ul class="right hide-on-small-and-down">
@@ -21,6 +21,12 @@
           </a>
 
           <ul id='dropdown' class='dropdown-content'>
+            <li v-if="isTeacher">
+              <router-link to="/planning" class="black-text">
+                <i class="material-icons">dashboard_customize</i>Мои уроки
+              </router-link>
+            </li>
+            <li class="divider" tabindex="-1"></li>
             <li>
               <router-link to="/profile" class="black-text">
                 <i class="material-icons">account_circle</i>Профиль
@@ -43,7 +49,7 @@
 <script >
 export default {
   data: () => ({
-    dateFormat: {time: false},
+    dateFormat: 'datetime',
     date: new Date(),
     interval: null,
     dropdown: null
@@ -65,14 +71,8 @@ export default {
     username() {
       return this.$store.getters.info.username;
     },
-    formatDate() {
-      const options = {day: '2-digit', month: 'long', year: 'numeric'}
-      if (this.dateFormat.time) {
-        options.hour = '2-digit';
-        options.minute = '2-digit';
-        options.second = '2-digit';
-      }
-      return new Intl.DateTimeFormat('ru-RU', options).format(new Date(this.date))
+    isTeacher() {
+      return this.$store.getters.info.teacher;
     }
   },
   beforeUnmount() {

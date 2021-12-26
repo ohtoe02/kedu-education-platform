@@ -2,8 +2,12 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+// import Pagination from 'v-pagination-3';
 import messagePlugin from "@/utils/message.plugin";
+import filtersPlugin from "@/utils/filters.plugin";
 import Loader from "@/components/app/Loader";
+import Pagination from "@/components/app/Pagination";
+import tooltipDirective from "@/directives/tooltip.directive";
 import "materialize-css/dist/js/materialize.min";
 import "./registerServiceWorker";
 
@@ -31,6 +35,9 @@ onAuthStateChanged(getAuth(), (user) => {
             .use(store)
             .use(router)
             .use(messagePlugin)
+            .use(filtersPlugin)
+            .directive('tooltip', tooltipDirective)
+            .component('Pagination', Pagination)
             .component('Loader', Loader)
             .mount("#app");
     }

@@ -59,14 +59,24 @@
       <p>
         <label>
           <input type="checkbox" v-model="agree"/>
-          <span :class="{submit: agree}">С правилами согласен</span>
+          <span :class="{
+            submit: agree,
+            'red-text': v$.agree.$dirty && !agree
+          }">С правилами согласен</span>
+        </label>
+      </p>
+      <hr>
+      <p>
+        <label>
+          <input type="checkbox" v-model="teacher"/>
+          <span :class="{submit: teacher}">Я преподаватель</span>
         </label>
       </p>
     </div>
     <div class="card-action">
       <div>
         <button
-            class="btn waves-effect waves-light auth-submit"
+            class="btn waves-effect light-blue waves-light auth-submit"
             type="submit"
         >
           Зарегистрироваться
@@ -76,7 +86,7 @@
 
       <p class="center">
         Уже есть аккаунт?
-        <router-link to="/login">Войти!</router-link>
+        <router-link class="light-blue-text" to="/login">Войти!</router-link>
       </p>
     </div>
   </form>
@@ -97,14 +107,15 @@ export default {
       email: '',
       password: '',
       username: '',
-      agree: false
+      agree: false,
+      teacher: false
     }
   },
   validations: {
     email: {email, required},
     password: {required, minLength: minLength(6)},
     username: {required},
-    agree: {checked: v => v}
+    agree: {checked: v => v},
   },
   methods: {
     async processRegister() {
@@ -115,7 +126,8 @@ export default {
       const formData = {
         email: this.email,
         password: this.password,
-        username: this.username
+        username: this.username,
+        teacher: this.teacher
       }
 
       try {
