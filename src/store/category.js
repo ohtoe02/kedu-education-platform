@@ -8,11 +8,11 @@ export default {
                 //Создать категорию с полями title и limit по адресу users/uid/categories
                 const category = await push(ref(getDatabase(), `users/${uid}/categories`), {
                     title,
-                    limit
+                    author: uid
                 })
                 const filePath = await dispatch('uploadFile', {path: `categories/${category.key}`, file})
-                dispatch('updateCategory', {title, limit, file: filePath, id: category.key})
-                return {title, limit, file: filePath, id: category.key}
+                dispatch('updateCategory', {title, author: uid, file: filePath, id: category.key})
+                return {title, author: uid, file: filePath, id: category.key}
             } catch (e) {
                 commit('setError', e)
                 throw e
@@ -47,7 +47,6 @@ export default {
                 //Обновить поля title и limit в категории по адресу users/uid/categories/id
                 await update(child(db, `users/${uid}/categories/${id}`), {
                     title,
-                    limit,
                     file
                 })
             } catch (e) {

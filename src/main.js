@@ -7,6 +7,7 @@ import messagePlugin from "@/utils/message.plugin";
 import filtersPlugin from "@/utils/filters.plugin";
 import Loader from "@/components/app/Loader";
 import Pagination from "@/components/app/Pagination";
+import vueAnkaCropper from 'vue-anka-cropper'
 import tooltipDirective from "@/directives/tooltip.directive";
 import "materialize-css/dist/js/materialize.min";
 import "./registerServiceWorker";
@@ -38,6 +39,7 @@ onAuthStateChanged(getAuth(), (user) => {
             .use(filtersPlugin)
             .directive('tooltip', tooltipDirective)
             .component('Pagination', Pagination)
+            .component('VueAnkaCropper', vueAnkaCropper)
             .component('Loader', Loader)
             .mount("#app");
     }

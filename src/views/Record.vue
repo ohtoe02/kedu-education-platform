@@ -7,8 +7,8 @@
     <Loader v-if="loading"/>
 
     <p class="center" v-else-if="!categories.length">Коллекций пока нет. <router-link to="/categories">Добавить новую коллекцию</router-link></p>
-
-    <form v-else @submit.prevent="createRecord" class="form">
+    <div v-else class="container">
+    <form  @submit.prevent="createRecord">
       <div class="input-field">
         <input
             :class="{invalid: v$.description.$dirty && v$.description.required.$invalid}"
@@ -79,38 +79,40 @@
           </div>
         </div>
       </div>
+      <div v-if="role">
+        <p>
+          <label>
+            <input
+                class="with-gap"
+                name="type"
+                type="radio"
+                value="private"
+                v-model="type"
+            />
+            <span>Приватно</span>
+          </label>
+        </p>
 
-      <p>
-        <label>
-          <input
-              class="with-gap"
-              name="type"
-              type="radio"
-              value="private"
-              v-model="type"
-          />
-          <span>Приватно</span>
-        </label>
-      </p>
-
-      <p>
-        <label>
-          <input
-              class="with-gap"
-              name="type"
-              type="radio"
-              value="public"
-              v-model="type"
-          />
-          <span>Публично</span>
-        </label>
-      </p>
+        <p>
+          <label>
+            <input
+                class="with-gap"
+                name="type"
+                type="radio"
+                value="public"
+                v-model="type"
+            />
+            <span>Публично</span>
+          </label>
+        </p>
+      </div>
 
       <button class="btn waves-effect waves-light light-blue" type="submit">
         Создать
         <i class="material-icons right">send</i>
       </button>
     </form>
+    </div>
 
 
   </div>
@@ -135,17 +137,18 @@ export default {
       type: 'private',
       // amount: 1,
       description: '',
-      currentFile: null
+      currentFile: null,
+      role: true
     }
   },
   computed: {
     ...mapGetters(['info']),
-    canCreateRecord() {
-      if (this.type === 'private')
-        return true
-
-      return this.info.bill >= this.amount
-    }
+    // canCreateRecord() {
+    //   if (this.type === 'private')
+    //     return true
+    //
+    //   return this.info.bill >= this.amount
+    // }
   },
   methods: {
     async createRecord() {
@@ -172,6 +175,7 @@ export default {
         // await this.$store.dispatch('updateInfo', {bill})
         this.$message('Запись была успешно добавлена')
         this.v$.$reset()
+        this.type = 'private'
         // this.amount = 1;
         this.description = ''
         this.currentFile = null
@@ -182,6 +186,8 @@ export default {
     },
   },
   async mounted() {
+    this.role = await this.$store.dispatch('fetchRoleInfo')
+    console.log(this.role)
     this.categories = await this.$store.dispatch('fetchCategories');
     this.loading = false;
 

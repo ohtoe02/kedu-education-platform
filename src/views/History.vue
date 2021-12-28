@@ -1,5 +1,6 @@
 <template >
-  <div>
+  <Loader v-if="loading"/>
+  <div v-else>
     <div class="page-title">
       <h3>{{category ? category.title : 'Урок'}}</h3>
     </div>

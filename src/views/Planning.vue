@@ -8,19 +8,17 @@
 
     <p class="center" v-else-if="!categories.length">Коллекций пока нет. <router-link to="/categories">Добавить новую коллекцию</router-link></p>
 
-    <section v-else >
+    <section class="row" v-else >
       <div
-          class="card light-blue lighten-3"
-          style="cursor: pointer"
+          class="col s3 card light-blue lighten-3"
           v-for="(cat, idx) of categories"
           :key="cat.id"
-          @click="$router.push(`/history/${cat.id}`)"
       >
         <div class="card-content category">
           <h5>
             <strong>{{cat.title}}</strong>
-  <!--          {{ $filterCurrency(cat.spend, 'RUB') }} из {{ $filterCurrency(cat.limit, 'RUB') }}-->
           </h5>
+          <hr style="border-color: lightskyblue">
   <!--        <div class="progress" v-tooltip="cat.tooltip">-->
   <!--          <div-->
   <!--              class="determinate"-->
@@ -28,9 +26,24 @@
   <!--              :style="{width: cat.progressPercent + '%'}"-->
   <!--          ></div>-->
   <!--        </div>-->
-          <div class="row">
+<!--          <div class="row">-->
+<!--            <img class="col s3 responsive-img category-preview" :src="cat.file" alt="">-->
+<!--            <div class="col s9 category-text"><p><strong>Всего уроков: {{getRecordsCount(cat.records)}}</strong> <br> Описание: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis cupiditate ea earum eos necessitatibus quo repellat repudiandae similique! Ipsum, iste, rem! Asperiores assumenda consequatur corporis culpa deserunt dolorum, earum enim est eveniet explicabo fuga fugit modi obcaecati pariatur recusandae sequi, totam ut, voluptatem. Doloribus est ipsum omnis quisquam sunt, voluptatibus..</p></div>-->
+<!--          </div>-->
+          <div>
             <img class="col responsive-img category-preview" :src="cat.file" alt="">
-            <div class="category-text col offset-s1">Описание: Lorem ipsum dolor sit amet, nulla optio quisquam, saepe soluta tempora. Ipsam!.</div>
+            <div class="col category-text"><p><strong>Всего уроков: {{cat.records.keys.length}}</strong></p></div>
+          </div>
+          <hr style="border-color: lightskyblue">
+          <div class="row">
+            <button
+                class="col btn waves-effect blue lighten-1 waves-light"
+                @click="$router.push(`/history/${cat.id}`)"
+                style="margin-right: 1.5rem"
+            >Открыть</button>
+            <button
+                class="col btn waves-effect red lighten-2 waves-light"
+            >Изменить</button>
           </div>
         </div>
       </div>
@@ -50,13 +63,8 @@ export default {
   }),
   computed: {
     ...mapGetters(['info']),
-
   },
   methods: {
-    async getRecordsCount(catId) {
-      const records = await this.$store.dispatch('fetchRecords', catId)
-      this.records.push(records)
-    }
   },
   async mounted() {
     // this.records = await this.$store.dispatch('fetchRecords')
@@ -83,16 +91,16 @@ export default {
       // const tooltip = `${tooltipValue < 0 ? 'Превышение на' : 'Осталось'} ${this.$filterCurrency(Math.abs(tooltipValue))}`
 
       return {
-        ...cat,
-        // progressPercent,
-        // progressColor,
-        // spend,
-        // tooltip
+        ...cat
       }
     })
 
     this.loading = false
-  }
+  },
+  metaInfo: {
+    title: 'Мои коллекции',
+    titleTemplate: null
+  },
 }
 
 </script >

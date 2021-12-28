@@ -12,7 +12,7 @@
         <div class="col s12">
           <div class="card card-out light-blue">
             <div class="card-content white-text">
-              <h5 class="center">{{record.description}}</h5>
+              <h5 style="margin-bottom: 0.5rem">{{record.description}}</h5>
               <hr>
               <Player :video-u-r-l="record.videoURL"/>
               <hr>
@@ -37,18 +37,26 @@ export default {
   data: () => ({
     loading: true,
     record: null,
-    category: null
+    category: null,
+    currentCat: null,
+    categories: []
   }),
   async mounted() {
     const id = this.$route.params.id
     const catId = this.$route.params.catId
     const record = await this.$store.dispatch('fetchRecordById', {catId, id})
+    this.categories = await this.$store.dispatch('fetchCategories');
+    if (this.categories.length)
+      this.currentCat = this.categories[0].id
+    console.log(this.categories)
     this.category = await this.$store.dispatch('fetchCategoryById', catId)
+    // this.category = this.categories.filter(c => {return c.id === catId})[0]
     this.record = {
       ...record,
       categoryName: this.category.title,
     }
 
+    setTimeout(() => {M.updateTextFields()}, 0)
     this.loading = false
   },
   computed: {

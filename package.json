@@ -19,7 +19,9 @@
     "register-service-worker": "^1.7.2",
     "v-pagination-3": "^0.1.7",
     "vue": "^3.2.26",
+    "vue-anka-cropper": "^1.1.0",
     "vue-chartjs": "^3.5.1",
+    "vue-meta": "^3.0.0-alpha.2",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"
   },
