@@ -39,6 +39,12 @@ const routes = [
     component: () => import('../views/History')
   },
   {
+    path: "/edit-lesson/:id",
+    name: "edit-lesson",
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/EditCategory')
+  },
+  {
     path: "/planning",
     name: "planning",
     meta: {layout: 'main', auth: true},
@@ -61,6 +67,12 @@ const routes = [
     name: "profile",
     meta: {layout: 'main', auth: true},
     component: () => import('../views/Profile')
+  },
+  {
+    path: "/catalog",
+    name: "catalog",
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/Catalog')
   },
 ];
 

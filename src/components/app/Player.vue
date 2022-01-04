@@ -3,7 +3,7 @@
 <!--    <iframe :width="width" :height="height" :src="url" title="YouTube video player" frameborder="0" allow="autoplay" allowfullscreen></iframe>-->
 <!--  </div>-->
 
-  <video class="responsive-video video-player" controls>
+  <video class="responsive-video video-player" preload="metadata" controls>
     <source :src="videoURL" type="video/mp4">
   </video>
 </template >

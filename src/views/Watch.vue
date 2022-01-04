@@ -45,7 +45,7 @@ export default {
     const id = this.$route.params.id
     const catId = this.$route.params.catId
     const record = await this.$store.dispatch('fetchRecordById', {catId, id})
-    this.categories = await this.$store.dispatch('fetchCategories');
+    this.categories = await this.$store.dispatch('fetchMyCategories');
     if (this.categories.length)
       this.currentCat = this.categories[0].id
     console.log(this.categories)

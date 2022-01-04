@@ -126,6 +126,7 @@ import {mapGetters} from 'vuex'
 export default {
   name: 'record',
   setup () {
+    document.title = 'Добавить видео'
     return { v$: useVuelidate() }
   },
   data() {
@@ -188,7 +189,7 @@ export default {
   async mounted() {
     this.role = await this.$store.dispatch('fetchRoleInfo')
     console.log(this.role)
-    this.categories = await this.$store.dispatch('fetchCategories');
+    this.categories = await this.$store.dispatch('fetchMyCategories');
     this.loading = false;
 
     if (this.categories.length) {

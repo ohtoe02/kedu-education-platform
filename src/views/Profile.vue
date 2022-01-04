@@ -37,6 +37,9 @@
 
 <script>
 export default {
+  setup() {
+    document.title = 'Профиль'
+  },
   data: () => ({
     username: '',
     validName: true,

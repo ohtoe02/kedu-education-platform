@@ -38,7 +38,7 @@ export default {
     const catId = this.$route.params.id
     this.category = await this.$store.dispatch('fetchCategoryById', catId)
     this.records = await this.$store.dispatch('fetchRecords', catId)
-    const categories = await this.$store.dispatch('fetchCategories')
+    const categories = await this.$store.dispatch('fetchMyCategories')
 
     this.setup(categories)
 

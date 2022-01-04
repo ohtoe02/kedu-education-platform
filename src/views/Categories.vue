@@ -26,6 +26,9 @@ import CategoryCreate from "@/components/CategoryCreate";
 import CategoryEdit from "@/components/CategoryEdit";
 export default {
   name: 'categories',
+  setup() {
+    document.title = 'Создать коллекцию'
+  },
   data() {
     return {
       categories: [],
@@ -34,7 +37,7 @@ export default {
     }
   },
   async mounted() {
-    this.categories = await this.$store.dispatch('fetchCategories');
+    this.categories = await this.$store.dispatch('fetchMyCategories');
     this.loading = false
   },
   components: {

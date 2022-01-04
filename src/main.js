@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import cropper from 'vue-image-crop-upload'
 // import Pagination from 'v-pagination-3';
 import messagePlugin from "@/utils/message.plugin";
 import filtersPlugin from "@/utils/filters.plugin";
@@ -38,6 +39,7 @@ onAuthStateChanged(getAuth(), (user) => {
             .use(messagePlugin)
             .use(filtersPlugin)
             .directive('tooltip', tooltipDirective)
+            .component('Cropper', cropper)
             .component('Pagination', Pagination)
             .component('VueAnkaCropper', vueAnkaCropper)
             .component('Loader', Loader)

@@ -1,4 +1,4 @@
-<template>
+  <template>
   <div>
     <div class="page-title">
       <h3>Счет</h3>

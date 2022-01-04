@@ -13,6 +13,7 @@ export default {
   data: () => ({
     links: [
         {title: 'Главная', url: '/planning', exact: true, teacherOnly: false},
+        {title: 'Каталог', url: '/catalog', teacherOnly: false},
         // {title: 'История', url: '/history', teacherOnly: true},
         // {title: 'Уроки', url: '/planning', teacherOnly: false},
         {title: 'Добавить видео', url: '/record', teacherOnly: true},
