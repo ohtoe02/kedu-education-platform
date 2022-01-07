@@ -27,6 +27,7 @@
         <select ref="select" v-model="category">
           <option
               v-for="c in categories"
+              :data-icon="c.file"
               :key="c.id"
               :value="c.id"
           >{{ c.title }}</option>

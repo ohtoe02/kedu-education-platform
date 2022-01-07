@@ -1,4 +1,5 @@
 <template>
+  <div class="background"></div>
   <Loader v-if="loading"/>
   <div v-else>
     <div class="app-main-layout">

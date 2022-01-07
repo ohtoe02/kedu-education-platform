@@ -4,6 +4,22 @@ html {
     font-family: Roboto, sans-serif;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
+body {
+}
+
+.background {
+    height: 780px;
+    width: 100%;
+    position: fixed;
+    background: url("https://firebasestorage.googleapis.com/v0/b/kids-edu-platform.appspot.com/o/default%2Fpictures%2FBG-min.png?alt=media&token=fb36eb98-88a6-41c3-bfce-d464b4469fd6") no-repeat center;
+    background-size: cover;
+    opacity: 40%;
+}
+
 
 .empty-layout {
     display: -webkit-flex;
@@ -45,7 +61,6 @@ html {
     position: absolute;
     top: 64px;
     width: 250px;
-    transition: transform .3s;
     transition: transform .3s, -webkit-transform .3s;
     bottom: 0 !important;
     height: auto !important
@@ -57,7 +72,7 @@ html {
 }
 
 .navbar {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
@@ -213,11 +228,12 @@ h5 {
     display: block;
     box-sizing: content-box;
     text-align: center;
+    margin: .5rem;
 }
 
-.card:not(:last-child){
-    margin-right: 2rem;
-}
+/*.card:not(:last-child){*/
+/*    margin-right: 2rem;*/
+/*}*/
 
 .preview {
     border: solid 2px #000000;
@@ -284,10 +300,27 @@ h5 {
     filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0));;
 }
 
-.catalog {
+/*.catalog {*/
+/*    display: flex;*/
+/*    align-items: flex-start;*/
+/*    flex-wrap: wrap;*/
+/*    justify-content: space-between;*/
+/*    width: 80%;*/
+/*    margin: auto;*/
+/*}*/
+
+.catalog-wrapper {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.catalog {
+    display: grid;
+    margin: auto;
+    grid-template-columns: repeat(auto-fit, 300px);
+    gap: 20px;
+    padding: 20px;
 }
 
 .catalog-card-title {
@@ -303,4 +336,20 @@ h5 {
 
 .category-button {
     margin: 4px 8px
+}
+
+[type="radio"]:not(:checked)+span, [type="radio"]:checked+span {
+    position: relative;
+    padding-left: 25px;
+    margin-left: 1rem;
+    cursor: pointer;
+    display: inline-block;
+    height: 25px;
+    line-height: 25px;
+    font-size: 1rem;
+    transition: .28s ease;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

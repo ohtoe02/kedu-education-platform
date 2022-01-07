@@ -10,7 +10,10 @@
     <p class="center" v-else-if="!records.length">Записей пока нет. <router-link to="/record">Добавить первую.</router-link></p>
 
     <section v-else>
-      <HistoryTable :records="items"/>
+      <HistoryTable
+          :records="items"
+          @recordRemoved="updateRecords"
+      />
 
       <Pagination
           v-model:page="page"
@@ -45,6 +48,9 @@ export default {
     this.loading = false
   },
   methods: {
+    async updateRecords() {
+      this.records = await this.$store.dispatch('fetchRecords', this.$route.params.id)
+    },
     setup(categories) {
       this.setupPagination(this.records.map(record => {
         return {

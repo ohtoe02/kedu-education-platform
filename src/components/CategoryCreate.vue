@@ -5,7 +5,7 @@
 <!--        <h4>Создать</h4>-->
 <!--      </div>-->
 
-      <form @submit.prevent="createCategory" class="row">
+      <form @submit.prevent="createCategory" class="row ">
 
         <img
             class="responsive-img image-set col s4"
@@ -73,7 +73,7 @@
           </div>
         </div>
 
-        <p class="col s9">
+        <p v-if="isTeacher" class="col s9">
           <label>
             <input
                 class="with-gap"
@@ -135,8 +135,6 @@ export default {
       this.show = !this.show
     },
     cropSuccess(imgDataUrl, field){
-      console.log('-------- crop success --------');
-      console.log(field)
       this.imgDataUrl = imgDataUrl;
     },
     async createCategory() {
@@ -178,6 +176,11 @@ export default {
     //   }
     //   reader.readAsDataURL(file)
     // }
+  },
+  computed: {
+    isTeacher() {
+      return this.$store.getters.info.teacher;
+    }
   },
   watch: {
     currentTag() {

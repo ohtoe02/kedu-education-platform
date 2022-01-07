@@ -7,7 +7,7 @@
       <th>Категория</th>
       <th>Дата</th>
       <th>Тип</th>
-      <th>Открыть</th>
+      <th>Действия</th>
     </tr>
     </thead>
 
@@ -26,11 +26,21 @@
 <!--            class="btn-small btn" @click="$router.push(`/detail/${record.id}`)">-->
 <!--          <i class="material-icons">open_in_new</i>-->
 <!--        </button>-->
-        <button
-            v-tooltip="'Посмотреть видео'"
-            class="btn-small light-blue btn" @click="$router.push(`/watch/${record.categoryId}/${record.id}`)">
-          <i class="material-icons">open_in_new</i>
-        </button>
+        <span>
+          <button
+              v-tooltip="'Посмотреть видео'"
+              class="btn-small light-blue btn"
+              @click="$router.push(`/watch/${record.categoryId}/${record.id}`)"
+              style="margin-right: 1rem"
+          >
+            <i class="material-icons">open_in_new</i>
+          </button>
+          <button
+              v-tooltip="'Удалить'"
+              class="btn-small red btn" @click="removeRecord(record.categoryId, record.id, record.videoURL.name)">
+            <i class="material-icons">remove</i>
+          </button>
+        </span>
       </td>
     </tr>
     </tbody>
@@ -44,6 +54,12 @@ export default {
     records: {
       required: true,
       type: Array
+    }
+  },
+  methods: {
+    removeRecord(catId, id, file) {
+      this.$store.dispatch('removeRecord', {catId, id, file})
+      this.$emit('recordRemoved')
     }
   },
   computed: {

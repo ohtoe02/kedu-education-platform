@@ -8,14 +8,16 @@
 
     <p class="center" v-else-if="!categories.length">Коллекций пока нет. <router-link to="/categories">Добавить новую коллекцию</router-link></p>
 
-    <section class="catalog" v-else >
+    <section class="catalog catalog-wrapper" v-else >
       <div
           class="card light-blue lighten-3"
           v-for="(cat, idx) of categories"
           :key="cat.id"
       >
         <div class="card-content category">
-          <h5 class="catalog-card-title">
+          <h5
+              class="catalog-card-title"
+          >
             {{cat.title}}
           </h5>
           <hr style="border-color: lightskyblue">
@@ -32,19 +34,15 @@
           <!--          </div>-->
           <div>
             <img class="responsive-img category-preview" :src="cat.file" alt="">
-            <div class="category-text"><p><strong>Всего уроков: {{ cat.records ? cat.records.keys.length : 0}}</strong></p></div>
+            <div class="category-text"><p><strong>Всего уроков: {{ cat.records ? Object.keys(cat.records).length : 0}}</strong></p></div>
           </div>
           <hr style="border-color: lightskyblue">
           <div class="button-row">
             <button
                 class="category-button btn waves-effect blue lighten-1 waves-light"
                 @click="$router.push(`/history/${cat.id}`)"
-                style="margin-right: 1.5rem"
+                style="padding: 0 1vmin"
             >Открыть</button>
-            <button
-                @click="this.$router.push(`/edit-lesson/${cat.id}`)"
-                class="category-button btn waves-effect red lighten-2 waves-light"
-            >Изменить</button>
           </div>
         </div>
       </div>
@@ -54,11 +52,13 @@
 
 <script >
 import {mapGetters} from "vuex";
+import Checkers from "@/components/app/Checkers";
 
 export default {
-  name: 'planning',
+  name: 'catalog',
+  components: {Checkers},
   setup() {
-    document.title = `Мои уроки`
+    document.title = `Каталог`
   },
   data: () => ({
     loading: true,

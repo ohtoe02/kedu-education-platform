@@ -14,7 +14,7 @@
             <div class="card-content white-text">
               <h5 style="margin-bottom: 0.5rem">{{record.description}}</h5>
               <hr>
-              <Player :video-u-r-l="record.videoURL"/>
+              <Player :video-u-r-l="record.videoURL.path"/>
               <hr>
               <p>Категория: {{record.categoryName}}</p>
 

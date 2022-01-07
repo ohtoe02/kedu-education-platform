@@ -22,6 +22,7 @@
     "vue-anka-cropper": "^1.1.0",
     "vue-chartjs": "^3.5.1",
     "vue-image-crop-upload": "^3.0.3",
+    "vue-loading-spinner": "^1.0.11",
     "vue-meta": "^3.0.0-alpha.2",
     "vue-router": "^4.0.12",
     "vuex": "^4.0.2"

@@ -1,17 +1,18 @@
 <template >
   <div>
     <div class="page-title">
-      <h3>Мои коллекции</h3>
+      <h3>Мои уроки</h3>
+      <Checkers @publicityChange="changePublicity"/>
 <!--      <h4>{{$filterCurrency(info.bill, 'RUB')}}</h4>-->
     </div>
     <Loader v-if="loading"/>
 
-    <p class="center" v-else-if="!categories.length">Коллекций пока нет. <router-link to="/categories">Добавить новую коллекцию</router-link></p>
+    <p class="center" v-else-if="!filteredCategories.all.length">Коллекций пока нет. <router-link to="/categories">Добавить новую коллекцию</router-link></p>
 
-    <section class="row" v-else >
+    <section class="catalog catalog-wrapper" v-else >
       <div
           class="col s3 card light-blue lighten-3"
-          v-for="(cat, idx) of categories"
+          v-for="(cat, idx) of filteredCategories[this.publicity]"
           :key="cat.id"
       >
         <div class="card-content category">
@@ -32,7 +33,7 @@
 <!--          </div>-->
           <div>
             <img class="responsive-img category-preview" :src="cat.file" alt="">
-            <div class="category-text"><p><strong>Всего уроков: {{ cat.records ? cat.records.keys.length : 0}}</strong></p></div>
+            <div class="category-text"><p><strong>Всего роликов: {{ cat.records ? Object.keys(cat.records).length : 0}}</strong></p></div>
           </div>
           <hr style="border-color: lightskyblue">
           <div class="row">
@@ -54,6 +55,8 @@
 
 <script >
 import {mapGetters} from "vuex";
+import RequestFilter from "@/components/app/RequestFilter";
+import Checkers from "@/components/app/Checkers";
 
 export default {
   name: 'planning',
@@ -63,43 +66,65 @@ export default {
   data: () => ({
     loading: true,
     categories: [],
-    records: []
+    filteredCategories: {
+      all: [],
+      public: [],
+      private: []
+    },
+    records: [],
+    publicity: 'all'
   }),
   computed: {
     ...mapGetters(['info']),
   },
   methods: {
+    changePublicity(publicity) {
+      this.publicity = publicity
+    }
   },
   async mounted() {
-    // this.records = await this.$store.dispatch('fetchRecords')
+    this.records = await this.$store.dispatch('fetchRecords')
     // const categories = await this.$store.dispatch('fetchCategories')
     const categories = await this.$store.dispatch('fetchMyCategories')
 
-    this.categories = categories.map(cat => {
-      // const spend = records
-      //     .filter(r => r.categoryId === cat.id)
-      //     .filter(r => r.type === 'outcome')
-      //     .reduce((total, record) => {
-      //       return total += +record.amount
-      //     }, 0)
-
-      // const percent = 100 * spend / cat.limit;
-      // const progressPercent = percent > 100 ? 100 : percent
-      // const progressColor = percent < 60
-      //     ? 'green'
-      //     : percent < 100
-      //         ? 'yellow'
-      //         : 'red'
-      //
-      // const tooltipValue = cat.limit - spend
-      // const tooltip = `${tooltipValue < 0 ? 'Превышение на' : 'Осталось'} ${this.$filterCurrency(Math.abs(tooltipValue))}`
-
-      return {
-        ...cat
-      }
+    // this.categories = categories.map(cat => {
+    //   // const spend = records
+    //   //     .filter(r => r.categoryId === cat.id)
+    //   //     .filter(r => r.type === 'outcome')
+    //   //     .reduce((total, record) => {
+    //   //       return total += +record.amount
+    //   //     }, 0)
+    //
+    //   // const percent = 100 * spend / cat.limit;
+    //   // const progressPercent = percent > 100 ? 100 : percent
+    //   // const progressColor = percent < 60
+    //   //     ? 'green'
+    //   //     : percent < 100
+    //   //         ? 'yellow'
+    //   //         : 'red'
+    //   //
+    //   // const tooltipValue = cat.limit - spend
+    //   // const tooltip = `${tooltipValue < 0 ? 'Превышение на' : 'Осталось'} ${this.$filterCurrency(Math.abs(tooltipValue))}`
+    //
+    //   return {
+    //     ...cat
+    //   }
+    // })
+    this.filteredCategories.all = categories
+    this.filteredCategories.public = categories.filter(c => {
+      if (c.isPublic)
+        return c
+    } )
+    this.filteredCategories.private = categories.filter(c => {
+      if (!c.isPublic)
+        return c
     })
-
+    debugger
     this.loading = false
+  },
+  components: {
+    RequestFilter,
+    Checkers
   }
 }
 
