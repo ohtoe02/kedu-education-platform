@@ -4,21 +4,58 @@
   <div v-else>
     <div class="app-main-layout">
 
-      <Navbar @toggleSidebar="isOpen = !isOpen" />
+      <Navbar v-if="!$store.getters.info.childMode" @toggleSidebar="isOpen = !isOpen" />
 
-      <Sidebar v-model:isOpen="isOpen"/>
+<!--      <Sidebar v-model:isOpen="isOpen"/>-->
 
-      <main class="app-content" :class="{full: !isOpen}">
+<!--      <main class="app-content" :class="{full: !isOpen}">-->
+      <main class="app-content full" :class="{'child-app-content': this.$store.getters.info.childMode}">
         <div class="app-page">
           <router-view />
         </div>
       </main>
 
-      <div class="fixed-action-btn scale-transition" v-if="this.$store.getters.info.teacher">
-        <router-link class="btn-floating btn-large blue" to="/record">
-          <i class="large material-icons">add</i>
-        </router-link>
+      <div
+          ref="child-mode"
+          class="fixed-action-btn"
+          style="transform: scale(1.4); bottom: 48px; left: 48px; width: fit-content"
+      >
+        <a class="btn-floating btn-large red" @click="ToggleChildMode">
+          <i class="large material-icons">child_care</i>
+        </a>
       </div>
+
+      <div
+          v-if="!$store.getters.info.childMode"
+          data-target="menu"
+          ref="menu"
+          class="fixed-action-btn"
+          style="transform: scale(1.2); bottom: 48px; right: 48px;"
+      >
+        <a class="btn-floating btn-large " style="background-color: var(--main-dark)" >
+          <i style="color: var(--main-blue); transform: scale(1.5)" class="large material-icons">menu</i>
+        </a>
+        <ul>
+          <li><router-link v-tooltip="{text: 'Каталог', direction: 'left'}" to="/catalog" style="background-color: var(--main-blue)" class="btn-floating">
+            <i class="material-icons">apps</i>
+          </router-link></li>
+          <li><router-link v-tooltip="{text: 'Мои уроки', direction: 'left'}" to="/planning" style="background-color: var(--main-red)" class="btn-floating">
+            <i class="material-icons">assignment</i>
+          </router-link></li>
+          <li><router-link v-tooltip="{text: 'Добавить видео', direction: 'left'}" to="/record" style="background-color: var(--main-green)" class="btn-floating">
+            <i style="color: var(--main-dark)" class="material-icons">video_library</i>
+          </router-link></li>
+          <li><router-link v-tooltip="{text: 'Создать урок', direction: 'left'}" to="/categories" style="background-color: var(--main-yellow)" class="btn-floating" >
+            <i style="color: var(--main-dark); transform: scale(1.4)" class="material-icons">add</i>
+          </router-link></li>
+        </ul>
+      </div>
+
+<!--      <div class="fixed-action-btn scale-transition" v-if="this.$store.getters.info.teacher">-->
+<!--        <router-link class="btn-floating btn-large blue" to="/record">-->
+<!--          <i class="large material-icons">add</i>-->
+<!--        </router-link>-->
+<!--      </div>-->
     </div>
   </div>
 </template>
@@ -32,8 +69,23 @@ export default {
   name: 'main-layout',
   data: () => ({
     isOpen: true,
-    loading: true
+    loading: true,
+    actionButton: null
   }),
+  methods: {
+    ToggleChildMode() {
+      this.$store.dispatch('updateInfo', {childMode: !this.$store.getters.info.childMode})
+      this.$router.push('/planning')
+      if (!this.$store.getters.info.childMode)
+        setTimeout(() => {
+          this.actionButton = M.FloatingActionButton.init(this.$refs.menu);
+        }, 0)
+      else {
+        this.actionButton.destroy()
+        this.actionButton = null
+      }
+    }
+  },
   computed: {
     error() {
       return this.$store.getters.error
@@ -49,7 +101,15 @@ export default {
     if (!Object.keys(this.$store.getters.info).length) {
       await this.$store.dispatch('fetchInfo')
     }
+
+    setTimeout(() => {
+      this.actionButton = M.FloatingActionButton.init(this.$refs.menu);
+    }, 0)
+
     this.loading = false
+  },
+  beforeUnmount() {
+    this.actionButton.destroy();
   },
   components: {
     Sidebar, Navbar

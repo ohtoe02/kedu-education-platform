@@ -2,7 +2,7 @@
   <Loader v-if="loading"/>
   <div v-else>
     <div class="page-title">
-      <h3>{{category ? category.title : 'Урок'}}</h3>
+      <h1 @click="$router.push('/planning')">{{category ? category.title : 'Урок'}}</h1>
     </div>
 
     <Loader v-if="loading"/>
@@ -38,10 +38,12 @@ export default {
     category: null
   }),
   async mounted() {
+    if (this.$store.getters.info.childMode)
+      this.$router.push('/planning')
     const catId = this.$route.params.id
-    this.category = await this.$store.dispatch('fetchCategoryById', catId)
+    this.category = await this.$store.dispatch('fetchCategoryById', {id: catId})
     this.records = await this.$store.dispatch('fetchRecords', catId)
-    const categories = await this.$store.dispatch('fetchMyCategories')
+    const categories = await this.$store.dispatch('fetchCategories')
 
     this.setup(categories)
 

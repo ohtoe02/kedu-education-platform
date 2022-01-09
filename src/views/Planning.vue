@@ -1,55 +1,34 @@
 <template >
   <div>
     <div class="page-title">
-      <h3>Мои уроки</h3>
-      <Checkers @publicityChange="changePublicity"/>
+      <h1>Мои уроки</h1>
 <!--      <h4>{{$filterCurrency(info.bill, 'RUB')}}</h4>-->
     </div>
+    <div v-if="!childMode" class="filters">
+      <Checkers v-model:type="publicity"/>
+      <CategoriesFilter v-model:filterTo="titleFilter"/>
+    </div>
+<!--    <CategoriesFilter v-model:filter="titleFilter" @filter="changeTitleFilter" />-->
+
     <Loader v-if="loading"/>
 
-    <p class="center" v-else-if="!filteredCategories.all.length">Коллекций пока нет. <router-link to="/categories">Добавить новую коллекцию</router-link></p>
+    <p class="center" v-else-if="!filteredCategories[publicity].length">Уроков пока нет. <router-link v-if="!childMode" to="/categories">Добавить новый урок</router-link></p>
 
-    <section class="catalog catalog-wrapper" v-else >
-      <div
-          class="col s3 card light-blue lighten-3"
-          v-for="(cat, idx) of filteredCategories[this.publicity]"
-          :key="cat.id"
-      >
-        <div class="card-content category">
-          <h5>
-            <strong>{{cat.title}}</strong>
-          </h5>
-          <hr style="border-color: lightskyblue">
-  <!--        <div class="progress" v-tooltip="cat.tooltip">-->
-  <!--          <div-->
-  <!--              class="determinate"-->
-  <!--              :class="[cat.progressColor]"-->
-  <!--              :style="{width: cat.progressPercent + '%'}"-->
-  <!--          ></div>-->
-  <!--        </div>-->
-<!--          <div class="row">-->
-<!--            <img class="col s3 responsive-img category-preview" :src="cat.file" alt="">-->
-<!--            <div class="col s9 category-text"><p><strong>Всего уроков: {{getRecordsCount(cat.records)}}</strong> <br> Описание: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Blanditiis cupiditate ea earum eos necessitatibus quo repellat repudiandae similique! Ipsum, iste, rem! Asperiores assumenda consequatur corporis culpa deserunt dolorum, earum enim est eveniet explicabo fuga fugit modi obcaecati pariatur recusandae sequi, totam ut, voluptatem. Doloribus est ipsum omnis quisquam sunt, voluptatibus..</p></div>-->
-<!--          </div>-->
-          <div>
-            <img class="responsive-img category-preview" :src="cat.file" alt="">
-            <div class="category-text"><p><strong>Всего роликов: {{ cat.records ? Object.keys(cat.records).length : 0}}</strong></p></div>
-          </div>
-          <hr style="border-color: lightskyblue">
-          <div class="row">
-            <button
-                class="left btn waves-effect blue lighten-1 waves-light"
-                @click="$router.push(`/history/${cat.id}`)"
-                style="margin-right: 1.5rem"
-            >Открыть</button>
-            <button
-                @click="this.$router.push(`/edit-lesson/${cat.id}`)"
-                class="right btn waves-effect red lighten-2 waves-light"
-            >Изменить</button>
-          </div>
-        </div>
-      </div>
+    <section v-if="!childMode">
+      <CategoriesTable :categories="filteredCategories[publicity].filter(t => {
+        if (titleFilter)
+          return t.title.toLowerCase().includes(titleFilter)
+        return t
+      })" :isChangeable="true"/>
     </section>
+    <section v-else>
+      <ChildCategoriesTable :categories="filteredCategories[publicity].filter(t => {
+        if (titleFilter)
+          return t.title.toLowerCase().includes(titleFilter)
+        return t
+      })" :isChangeable="true"/>
+    </section>
+
   </div>
 </template >
 
@@ -57,6 +36,9 @@
 import {mapGetters} from "vuex";
 import RequestFilter from "@/components/app/RequestFilter";
 import Checkers from "@/components/app/Checkers";
+import CategoriesFilter from "@/components/app/CategoriesFilter";
+import CategoriesTable from "@/components/CategoriesTable";
+import ChildCategoriesTable from "@/components/ChildCategoriesTable";
 
 export default {
   name: 'planning',
@@ -72,14 +54,13 @@ export default {
       private: []
     },
     records: [],
-    publicity: 'all'
+    publicity: 'all',
+    titleFilter: ''
   }),
   computed: {
     ...mapGetters(['info']),
-  },
-  methods: {
-    changePublicity(publicity) {
-      this.publicity = publicity
+    childMode() {
+      return this.$store.getters.info.childMode
     }
   },
   async mounted() {
@@ -87,29 +68,6 @@ export default {
     // const categories = await this.$store.dispatch('fetchCategories')
     const categories = await this.$store.dispatch('fetchMyCategories')
 
-    // this.categories = categories.map(cat => {
-    //   // const spend = records
-    //   //     .filter(r => r.categoryId === cat.id)
-    //   //     .filter(r => r.type === 'outcome')
-    //   //     .reduce((total, record) => {
-    //   //       return total += +record.amount
-    //   //     }, 0)
-    //
-    //   // const percent = 100 * spend / cat.limit;
-    //   // const progressPercent = percent > 100 ? 100 : percent
-    //   // const progressColor = percent < 60
-    //   //     ? 'green'
-    //   //     : percent < 100
-    //   //         ? 'yellow'
-    //   //         : 'red'
-    //   //
-    //   // const tooltipValue = cat.limit - spend
-    //   // const tooltip = `${tooltipValue < 0 ? 'Превышение на' : 'Осталось'} ${this.$filterCurrency(Math.abs(tooltipValue))}`
-    //
-    //   return {
-    //     ...cat
-    //   }
-    // })
     this.filteredCategories.all = categories
     this.filteredCategories.public = categories.filter(c => {
       if (c.isPublic)
@@ -119,12 +77,14 @@ export default {
       if (!c.isPublic)
         return c
     })
-    debugger
     this.loading = false
   },
   components: {
+    ChildCategoriesTable,
     RequestFilter,
-    Checkers
+    Checkers,
+    CategoriesTable,
+    CategoriesFilter
   }
 }
 

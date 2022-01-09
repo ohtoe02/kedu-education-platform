@@ -6,7 +6,8 @@
             name="type"
             type="radio"
             value="all"
-            v-model="publicity"
+            @change="changeType"
+            v-model="type"
         />
         <span>Все</span>
       </label>
@@ -17,9 +18,10 @@
             name="type"
             type="radio"
             value="public"
-            v-model="publicity"
+            @change="changeType"
+            v-model="type"
         />
-        <span>Публично</span>
+        <span>Публичные</span>
       </label>
 
       <label>
@@ -28,9 +30,10 @@
             name="type"
             type="radio"
             value="private"
-            v-model="publicity"
+            @change="changeType"
+            v-model="type"
         />
-        <span>Приватно</span>
+        <span>Приватные</span>
       </label>
   </div>
 </template>
@@ -38,13 +41,16 @@
 <script>
 export default {
   name: "Checkers",
-  data: () => ({
-    publicity: 'all'
-  }),
+  props: ['type'],
+  emits: ['update:type'],
+  methods: {
+    changeType() {
+      this.$emit('update:type', this.type)
+    }
+  },
   watch: {
     publicity() {
-      const pub = this.publicity
-      this.$emit('publicityChange', pub)
+      this.$emit('publicityChange', this.publicity)
     }
   }
 }

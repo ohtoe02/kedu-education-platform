@@ -1,94 +1,81 @@
 <template >
-  <div class="col s12 m6">
+  <div>
     <div>
+      <Cropper
+          field="img"
+          v-model="show"
+          @crop-success="cropSuccess"
+          :width="350"
+          :height="350"
+          langType="ru"
+          :noCircle="true"
+          img-format="png"
+      />
 <!--      <div class="page-subtitle">-->
 <!--        <h4>Создать</h4>-->
 <!--      </div>-->
 
-      <form @submit.prevent="createCategory" class="row ">
-
-        <img
-            class="responsive-img image-set col s4"
-            @click="showCropper"
-            width="350"
-            :src="imgDataUrl
-            ? imgDataUrl
-            : 'https://firebasestorage.googleapis.com/v0/b/kids-edu-platform.appspot.com/o/default%2Fpictures%2Fplaceholder.png?alt=media&token=636f6141-4df4-4ab3-b088-177311a0650a'"
-            alt=""
-
-        >
-        <Cropper
-            field="img"
-            v-model="show"
-            @crop-success="cropSuccess"
-            :width="350"
-            :height="350"
-            langType="ru"
-            :noCircle="true"
-            img-format="png"
-        />
-        <div class="input-field col s6 ">
-          <input
-              id="name"
-              type="text"
-              v-model="title"
-              :class="{invalid: v$.title.$dirty && v$.title.required.$invalid}"
+      <form @submit.prevent="createCategory" class="options-input" style="padding: 2rem; background-color: white; border-radius: 8px; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .2))">
+        <div class="picture-and-inputs cat-row">
+          <img
+              v-tooltip="{text: 'Нажмите, чтоб загрузить заставку'}"
+              loading="lazy"
+              class="responsive-img image-set"
+              @click="showCropper"
+              width="350"
+              :src="imgDataUrl
+              ? imgDataUrl
+              : 'https://firebasestorage.googleapis.com/v0/b/kids-edu-platform.appspot.com/o/default%2Fpictures%2Fplaceholder.png?alt=media&token=636f6141-4df4-4ab3-b088-177311a0650a'"
+              alt=""
           >
-          <label for="name">Название</label>
-          <span
-              class="helper-text invalid"
-              v-if="v$.title.$dirty && v$.title.required.$invalid"
-          >Введите название категории</span>
+          <div class="input-field">
+            <input
+                id="name"
+                type="text"
+                v-model="title"
+                :class="{invalid: (v$.title.$dirty && v$.title.required.$invalid) || (v$.title.$dirty && v$.title.maxLength.$invalid)}"
+            >
+            <label for="name">Название</label>
+            <span
+                class="helper-text invalid"
+                v-if="v$.title.$dirty && v$.title.required.$invalid"
+            >Введите название категории</span>
+            <span
+                class="helper-text invalid"
+                v-if="v$.title.$dirty && v$.title.maxLength.$invalid"
+            >Название должно быть менее {{ v$.title.maxLength.$params.max }} символов. Сейчас {{title.length}}</span>
+          </div>
         </div>
 
-<!--        <div class="input-field">-->
-<!--          <div class="file-field input-field">-->
-<!--            <div class="btn light-blue">-->
-<!--              <span>Выбрать файл</span>-->
-<!--              <input ref="file" @change="handleFileUpload" type="file" accept="image/*">-->
-<!--            </div>-->
-<!--            <div class="file-path-wrapper">-->
-<!--              <input-->
-<!--                  id="file"-->
-<!--                  class="file-path validate"-->
-<!--                  :class="{-->
-<!--                invalid: v$.selectedFile.$dirty && v$.selectedFile.required.$invalid,-->
-<!--                valid: selectedFile-->
-<!--                  }"-->
-<!--                  :value="selectedFile ? selectedFile.name : undefined"-->
-<!--                  type="text"-->
-<!--                  placeholder="Загрузите заставку коллекции"-->
-<!--              >-->
-<!--              <span-->
-<!--                  class="helper-text invalid"-->
-<!--                  v-if="v$.selectedFile.$dirty && v$.selectedFile.required.$invalid"-->
-<!--              >Добавьте изображение коллекции</span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
+        <div class="input-field cat-row">
+          <textarea id="textarea1" class="materialize-textarea"></textarea>
+          <label for="textarea1">Описание</label>
+        </div>
 
-        <div class="input-field col s12">
+        <div class="input-field cat-row">
           <div ref="chips" class="chips chips-placeholder">
             <input id="tags" placeholder="Добавьте тэг" v-model="currentTag" @keydown.space.enter="addChip">
           </div>
         </div>
 
-        <p v-if="isTeacher" class="col s9">
-          <label>
-            <input
-                class="with-gap"
-                name="type"
-                type="checkbox"
-                v-model="isPublic"
-            />
-            <span>Публично</span>
-          </label>
-        </p>
+        <div class="cat-row">
+          <p v-if="isTeacher">
+            <label>
+              <input
+                  class="with-gap"
+                  name="type"
+                  type="checkbox"
+                  v-model="isPublic"
+              />
+              <span>Публично</span>
+            </label>
+          </p>
 
-        <button class="btn waves-effect light-blue waves-light right" type="submit">
-          Создать
-          <i class="material-icons right">send</i>
-        </button>
+          <button class="btn waves-effect confirm-button waves-light" type="submit">
+            Создать
+            <i class="material-icons right">send</i>
+          </button>
+        </div>
       </form>
     </div>
   </div>
@@ -96,7 +83,7 @@
 
 <script >
 import useVuelidate  from "@vuelidate/core";
-import { required } from "@vuelidate/validators";
+import { required, maxLength } from "@vuelidate/validators";
 import { ref } from 'vue'
 export default {
   name: "CategoryCreate",
@@ -115,7 +102,7 @@ export default {
     }
   },
   validations: {
-    title: { required },
+    title: { required, maxLength: maxLength(30) },
     imgDataUrl: {required},
   },
   mounted() {

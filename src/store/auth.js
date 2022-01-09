@@ -11,13 +11,14 @@ export default {
                 throw e;
             }
         },
-        async register({dispatch, commit}, {email, password, username, teacher}) {
+        async register({dispatch, commit}, {email, password, username, teacher, childMode}) {
             try {
                 await createUserWithEmailAndPassword(getAuth(), email, password);
                 const uid = await dispatch('getUid')
                 await set(ref(getDatabase(), `users/${uid}/info`), {
                     username,
-                    teacher
+                    teacher,
+                    childMode
                 })
             } catch (e) {
                 commit('setError', e)

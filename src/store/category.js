@@ -33,20 +33,21 @@ export default {
         }},
         async fetchMyCategories({dispatch, commit}) {
             try {
-            const uid = await dispatch('getUid');
-            const categories = (await get(child(ref(getDatabase()), `users/${uid}/categories`))).val() || {};
-            const res = [];
-            for (const catId of Object.values(categories)) {
-                res.push(await dispatch('fetchCategoryById', {id: catId}))
-                // debugger
-            }
+                const uid = await dispatch('getUid');
+                const categories = (await get(child(ref(getDatabase()), `users/${uid}/categories`))).val() || {};
+
+                const res = [];
+                for (const catId of Object.values(categories)) {
+                    res.push(await dispatch('fetchCategoryById', {id: catId}))
+                }
                 return res
 
             // return Object.keys(categories).map(key => ({...categories[key], id: key}))
-        } catch (e) {
-            commit('setError', e)
-            throw e
-        }},
+            } catch (e) {
+                commit('setError', e)
+                throw e
+            }
+        },
         async fetchCategoryById({dispatch, commit}, {id}) {
             try {
                 const uid = await dispatch('getUid');
@@ -79,7 +80,7 @@ export default {
             try {
                 const uid = await dispatch('getUid');
                 const db = ref(getDatabase())
-                dispatch('removeFile', {path: `categories/${id}`, file})
+                dispatch('removeFile', {path: `categories/`, file: id})
                 await remove(child(db, `categories/${id}`))
                 await remove(child(db, `users/${uid}/categories/${id}`))
 

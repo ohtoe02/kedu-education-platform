@@ -1,11 +1,10 @@
 <template >
-  <nav class="navbar light-blue accent-2">
+  <nav class="navbar">
     <div class="nav-wrapper">
       <div class="navbar-left">
-        <a href="#" @click.prevent="$emit('toggleSidebar')">
-          <i class="material-icons black-text">dehaze</i>
-        </a>
-        <span class="black-text" style="cursor: pointer" >{{ $filterDate(date, 'datetime') }}</span>
+<!--        <a href="#" @click.prevent="$emit('toggleSidebar')">-->
+<!--          <i class="material-icons black-text">dehaze</i>-->
+<!--        </a>-->
       </div>
 
       <ul class="right hide-on-small-and-down">
@@ -16,7 +15,7 @@
               data-target="dropdown"
               ref="dropdown"
           >
-            {{ username }}
+            <strong>{{ username }}</strong>
             <i class="material-icons right">arrow_drop_down</i>
           </a>
 
@@ -49,8 +48,6 @@
 <script >
 export default {
   data: () => ({
-    dateFormat: 'datetime',
-    date: new Date(),
     interval: null,
     dropdown: null
   }),
@@ -61,7 +58,6 @@ export default {
     }
   },
   mounted() {
-    this.interval = setInterval(() => {this.date = new Date()}, 1000)
     this.dropdown = M.Dropdown.init(this.$refs.dropdown, {
       constrainWidth: true,
       coverTrigger: false

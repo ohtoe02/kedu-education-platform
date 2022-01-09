@@ -1,30 +1,33 @@
 <template >
-  <div class="col s12 m6">
+  <div>
     <div >
-      <img height="250" width="250" class="center-block category-preview" :src="picture ? picture : ''" alt="">
       <div class="">
+        <form @submit.prevent="editCategory" class="options-input">
+          <div class="picture-and-inputs cat-row">
+            <img height="250" width="250" class="responsive-img category-preview" :src="picture ? picture : ''" alt="">
 
-        <form @submit.prevent="editCategory">
-
-          <div class="input-field">
-            <input
-                id="name"
-                type="text"
-                v-model="title"
-                :class="{invalid: v$.title.$dirty && v$.title.required.$invalid}"
-            >
-            <label for="name">Название</label>
-            <span
-                class="helper-text invalid"
-                v-if="v$.title.$dirty && v$.title.required.$invalid"
-            >Введите название категории</span>
+            <div class="input-field">
+              <input
+                  id="name"
+                  type="text"
+                  v-model="title"
+                  :class="{invalid: v$.title.$dirty && v$.title.required.$invalid}"
+              >
+              <label for="name">Название</label>
+              <span
+                  class="helper-text invalid"
+                  v-if="v$.title.$dirty && v$.title.required.$invalid"
+              >Введите название категории</span>
+            </div>
           </div>
 
-          <div ref="chips" class="chips chips-initial">
-            <input v-model="currentTag" placeholder="Тэги" @keydown.space="addChip">
+          <div class="cat-row">
+            <div ref="chips" class="chips chips-initial">
+              <input v-model="currentTag" placeholder="Тэги" @keydown.space="addChip">
+            </div>
           </div>
 
-          <p>
+          <p class="cat-row">
             <label>
               <input
                   class="with-gap"
@@ -36,15 +39,17 @@
             </label>
           </p>
 
-          <button class="btn waves-effect blue waves-light" type="submit">
-            Обновить
-            <i class="material-icons right">send</i>
-          </button>
+          <div class="cat-row">
+            <button style="width: fit-content" class="btn waves-effect confirm-button waves-light" type="submit">
+              Обновить
+              <i class="material-icons right">send</i>
+            </button>
 
-          <button class="right btn waves-effect red waves-light" type="button" @click="removeForm">
-            Удалить
-            <i class="material-icons right">clear</i>
-          </button>
+            <button class="right btn waves-effect red waves-light" type="button" @click="removeForm">
+              Удалить
+              <i class="material-icons right">clear</i>
+            </button>
+          </div>
         </form>
       </div>
     </div>

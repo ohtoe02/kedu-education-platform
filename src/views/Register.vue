@@ -127,7 +127,8 @@ export default {
         email: this.email,
         password: this.password,
         username: this.username,
-        teacher: this.teacher
+        teacher: this.teacher,
+        childMode: false
       }
 
       try {

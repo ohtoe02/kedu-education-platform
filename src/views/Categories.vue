@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="page-title">
-      <h3>Создать коллекцию</h3>
+      <h1>Создать урок</h1>
     </div>
     <section>
       <Loader v-if="loading"/>
-      <div class="container" v-else>
-        <CategoryCreate @created="addNewCategory"/>
+      <div v-else>
+        <CategoryCreate @created="addNewCategory" />
 
 <!--        <CategoryEdit-->
 <!--          v-if="categories.length"-->
@@ -46,6 +46,7 @@ export default {
   methods: {
     addNewCategory(category) {
       this.categories.push(category)
+      this.$router.push('/planning')
     },
     updateCategories(category) {
       const idx = this.categories.findIndex(c => c.id === category.id);

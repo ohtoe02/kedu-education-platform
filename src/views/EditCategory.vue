@@ -1,12 +1,18 @@
 <template >
   <div>
     <div class="page-title">
-      <h3>Редактировать запись</h3>
+      <h1>Редактировать запись</h1>
     </div>
 
     <Loader v-if="loading"/>
 
-    <CategoryEdit class="container" v-model:loading="loading" v-else :catId="$route.params.id" />
+    <CategoryEdit
+        class="container"
+        v-model:loading="loading"
+        v-else
+        :catId="$route.params.id"
+        style="padding: 2rem; background-color: white; border-radius: 8px; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .2))"
+    />
 
 
   </div>

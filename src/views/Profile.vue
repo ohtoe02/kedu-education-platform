@@ -1,10 +1,10 @@
 <template >
   <div>
     <div class="page-title">
-      <h3>Профиль</h3>
+      <h1>Профиль</h1>
     </div>
 
-    <form class="form" @submit.prevent="updateInfo">
+    <form class="form options-input" @submit.prevent="updateInfo" style="padding: 2rem; background-color: white; border-radius: 8px; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .2))">
       <div class="input-field">
         <input
             v-model="username"
