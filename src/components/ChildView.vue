@@ -9,12 +9,13 @@
       <ViewVideoLink
           style="margin: auto"
           :image="prevRecord
-          ? prevRecord.image
+          ? prevRecord.imageURL
           : ''"
           :link="prevRecord
-          ? `/watch/${$route.params.catId}/${$route.params.catId - 1}`
+          ? `/watch/${$route.params.catId}/${$route.params.id - 1}`
           : ''"
           :title="prevRecord ? prevRecord.title : ''"
+          @goTo="changeLink"
       />
 
       <Player
@@ -25,12 +26,13 @@
       <ViewVideoLink
           style="margin: auto"
           :image="nextRecord
-          ? nextRecord.image
+          ? nextRecord.imageURL
           : ''"
-          :link="prevRecord
-          ? `/watch/${$route.params.catId}/${$route.params.catId - 1}`
+          :link="nextRecord
+          ? `/watch/${$route.params.catId}/${+$route.params.id + 1}`
           : ''"
           :title="nextRecord ? nextRecord.title : ''"
+          @goTo="changeLink"
       />
 
       <!--            <small>{{ $filterDate(current.record.date) }}</small>-->
@@ -45,6 +47,11 @@ export default {
   name: "ChildView",
   components: {Player, ViewVideoLink},
   props: ['currentRecord', 'prevRecord', 'nextRecord', 'categoryTitle', 'categoryId'],
+  methods: {
+    changeLink(link) {
+      this.$emit('changeLink', link)
+    }
+  }
 
 }
 </script>

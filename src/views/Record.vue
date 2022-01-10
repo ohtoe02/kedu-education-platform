@@ -8,6 +8,16 @@
 
     <p class="center" v-else-if="!categories.length">Коллекций пока нет. <router-link to="/categories">Добавить новую коллекцию</router-link></p>
     <div v-else class="container"  >
+      <Cropper
+          field="img"
+          v-model="show"
+          @crop-success="cropSuccess"
+          :width="350"
+          :height="350"
+          langType="ru"
+          :noCircle="true"
+          img-format="png"
+      />
     <form
         @submit.prevent="createRecord"
         class="options-input"
@@ -24,16 +34,6 @@
               : 'https://firebasestorage.googleapis.com/v0/b/kids-edu-platform.appspot.com/o/default%2Fpictures%2Fvideo_placeholder.png?alt=media&token=d3120780-bff6-4c14-8007-1473c5c6722b'"
             alt=""
         >
-        <Cropper
-            field="img"
-            v-model="show"
-            @crop-success="cropSuccess"
-            :width="350"
-            :height="350"
-            langType="ru"
-            :noCircle="true"
-            img-format="png"
-        />
         <div>
           <div class="input-field" style="margin: 0 0 32px 0">
             <input
@@ -207,7 +207,6 @@ export default {
   },
   async mounted() {
     this.role = await this.$store.dispatch('fetchRoleInfo')
-    console.log(this.role)
     this.categories = await this.$store.dispatch('fetchMyCategories');
     this.loading = false;
 

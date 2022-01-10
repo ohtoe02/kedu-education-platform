@@ -29,7 +29,7 @@ export default {
                 })
                 await set(ref(getDatabase(), `users/${uid}/records/${record.key}`), record.key)
                 const imageURL = await dispatch('uploadCroppedFile', {path: `records/${record.key}`, file: image})
-                const videoURL = await dispatch('uploadFile', {path: `records/`, file: video})
+                const videoURL = await dispatch('uploadFile', {path: `records/${record.key}`, file: video})
                 dispatch('updateRecord', {title, catId: categoryId , author: uid, imageURL, videoURL, id: record.key})
                 const newRec = {title, catId: categoryId, author: uid, imageURL, videoURL}
                 // await push(ref(getDatabase(), `categories/${categoryId}/records`), {...newRec, author: uid})

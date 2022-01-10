@@ -15,6 +15,7 @@
         :nextRecord="current.nextRecord"
         :categoryTitle="category.title"
         :categoryId="$route.params.catId"
+        @changeLink="changeLink"
         />
 <!--        <div class="player-out">-->
 <!--          <div>-->
@@ -76,6 +77,11 @@ export default {
 
     setTimeout(() => {M.updateTextFields()}, 0)
     this.loading = false
+  },
+  methods: {
+    changeLink(link) {
+      this.$router.push({path: link})
+    }
   },
   computed: {
     categoryId() {
