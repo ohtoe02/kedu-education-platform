@@ -14,13 +14,12 @@
           :link="prevRecord
           ? `/watch/${$route.params.catId}/${$route.params.id - 1}`
           : ''"
-          :title="prevRecord ? prevRecord.title : ''"
-          @goTo="changeLink"
+          :title="prevRecord ? prevRecord.title : 'Начало'"
       />
 
       <Player
-          :videoURL="currentRecord.videoURL.path"
-          style="margin: auto"
+          v-model:video-u-r-l="videoURL"
+          style="margin: auto; height: 100%; width: auto"
       />
 
       <ViewVideoLink
@@ -32,7 +31,6 @@
           ? `/watch/${$route.params.catId}/${+$route.params.id + 1}`
           : ''"
           :title="nextRecord ? nextRecord.title : ''"
-          @goTo="changeLink"
       />
 
       <!--            <small>{{ $filterDate(current.record.date) }}</small>-->
@@ -47,12 +45,20 @@ export default {
   name: "ChildView",
   components: {Player, ViewVideoLink},
   props: ['currentRecord', 'prevRecord', 'nextRecord', 'categoryTitle', 'categoryId'],
-  methods: {
-    changeLink(link) {
-      this.$emit('changeLink', link)
+  computed: {
+    videoURL() {
+      return this.currentRecord.videoURL.path
+    },
+    link() {
+      return (this.isChild || this.$route.params.catId === 'empty') ? `/planning` : `/history/${this.$route.params.catId}`
+    },
+    isChild() {
+      return this.$store.getters.info.childMode
+    },
+    returnLink() {
+      return this.isChild ? `/planning` : `/history/${this.$route.params.catId}`
     }
   }
-
 }
 </script>
 

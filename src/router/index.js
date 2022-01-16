@@ -11,13 +11,13 @@ const routes = [
   {
     path: "/login",
     name: "login",
-    meta: {layout: 'empty'},
+    meta: {layout: 'login'},
     component: () => import('../views/Login')
   },
   {
     path: "/register",
     name: "register",
-    meta: {layout: 'empty'},
+    meta: {layout: 'login'},
     component: () => import('../views/Register')
   },
   {
@@ -39,10 +39,22 @@ const routes = [
     component: () => import('../views/History')
   },
   {
+    path: "/my-records",
+    name: "my-records",
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/MyRecords')
+  },
+  {
     path: "/edit-lesson/:id",
     name: "edit-lesson",
     meta: {layout: 'main', auth: true},
     component: () => import('../views/EditCategory')
+  },
+  {
+    path: "/edit-record/:catId/:id",
+    name: "edit-record",
+    meta: {layout: 'main', auth: true},
+    component: () => import('../views/EditRecord')
   },
   {
     path: "/planning",

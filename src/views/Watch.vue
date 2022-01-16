@@ -1,7 +1,7 @@
 <template >
   <div>
     <Loader v-if="loading"/>
-    <div v-else-if="current.record">
+    <div v-else-if="currentRecord">
 <!--      <div class="breadcrumb-wrap">-->
 <!--        <router-link :to="`/history/${this.$route.params.catId}`" class="breadcrumb">Уроки</router-link>-->
 <!--        <a @click.prevent class="breadcrumb">-->
@@ -10,12 +10,11 @@
 <!--      </div>-->
       <div class="current-videos">
         <ChildView
-        :currentRecord="current.record"
-        :prevRecord="current.prevRecord"
-        :nextRecord="current.nextRecord"
+        v-model:currentRecord="currentRecord"
+        v-model:prevRecord="prevRecord"
+        v-model:nextRecord="nextRecord"
         :categoryTitle="category.title"
         :categoryId="$route.params.catId"
-        @changeLink="changeLink"
         />
 <!--        <div class="player-out">-->
 <!--          <div>-->
@@ -41,13 +40,11 @@ import ChildView from "@/components/ChildView";
 export default {
   name: "Watch",
   components: {Player, ChildView},
+  setup() {
+    document.title = 'Просмотр'
+  },
   data: () => ({
     loading: true,
-    current: {
-      prevRecord: null,
-      record: null,
-      nextRecord: null
-    },
 
     records: [],
     category: null,
@@ -57,7 +54,6 @@ export default {
   async mounted() {
     const id = +this.$route.params.id
     const catId = this.$route.params.catId
-    const record = await this.$store.dispatch('fetchRecordById', {catId, id})
     this.records = await this.$store.dispatch('fetchRecords', catId)
 
     this.categories = await this.$store.dispatch('fetchMyCategories');
@@ -69,11 +65,11 @@ export default {
     //   ...record,
     //   categoryName: this.category.title,
     // }
-    this.current.record = this.records[id - 1]
-    if (id > 1)
-      this.current.prevRecord = this.records[id - 2]
-    if (id < this.records.length)
-      this.current.nextRecord = this.records[id]
+    // this.current.record = this.records[id - 1]
+    // if (id > 1)
+    //   this.current.prevRecord = this.records[id - 2]
+    // if (id < this.records.length)
+    //   this.current.nextRecord = this.records[id]
 
     setTimeout(() => {M.updateTextFields()}, 0)
     this.loading = false
@@ -81,11 +77,35 @@ export default {
   methods: {
     changeLink(link) {
       this.$router.push({path: link})
+    },
+    isItemIn(delta = 0) {
+      const len = this.records.length
+      const id = +this.$route.params.id - delta
+      const diff = len - id
+      return diff > 0 && diff <= len
     }
   },
   computed: {
     categoryId() {
       return `/history/${this.category.id}`
+    },
+    currentRecord() {
+      const id = +this.$route.params.id - 1
+      if (this.isItemIn(1))
+        return this.records[id]
+      return null
+    },
+    prevRecord() {
+      const id = +this.$route.params.id - 2
+      if (this.isItemIn(2))
+        return this.records[id]
+      return null
+    },
+    nextRecord() {
+      const id = +this.$route.params.id
+      if (this.isItemIn())
+        return this.records[id]
+      return null
     }
   }
 }

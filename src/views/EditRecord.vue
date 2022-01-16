@@ -1,15 +1,17 @@
 <template >
   <div>
     <div class="page-title">
-      <h1>Редактировать запись</h1>
+      <h1>Редактировать видео</h1>
     </div>
 
     <Loader v-if="loading"/>
 
-    <CategoryEdit
+    <RecordEdit
         v-model:loading="loading"
         v-else
-        :catId="$route.params.id"
+        :id="$route.params.id"
+        :catId="$route.params.catId"
+        @updated="handleUpdate"
     />
 
 
@@ -20,13 +22,13 @@
 import useVuelidate  from "@vuelidate/core";
 import { required, minValue } from "@vuelidate/validators";
 import {mapGetters} from 'vuex'
-import CategoryEdit from "@/components/CategoryEdit";
+import RecordEdit from "@/components/app/RecordEdit";
 
 export default {
-  name: 'edit-category',
-  components: {CategoryEdit},
+  name: 'edit-record',
+  components: {RecordEdit},
   setup () {
-    document.title = 'Редактировать категорию'
+    document.title = 'Редактировать видео'
     return { v$: useVuelidate() }
   },
   data() {
@@ -45,6 +47,9 @@ export default {
     ...mapGetters(['info']),
   },
   methods: {
+    handleUpdate(recordData) {
+      this.$router.replace(`/edit-record/${recordData.categoryId}/${recordData.id}`)
+    },
     async createRecord() {
       if (this.v$.$invalid) {
         this.v$.$touch()
@@ -73,6 +78,8 @@ export default {
     },
   },
   async mounted() {
+    if (this.$store.getters.info.childMode)
+      this.$router.replace('/planning')
     this.role = await this.$store.dispatch('fetchRoleInfo')
     // this.categories = await this.$store.dispatch('fetchCategories');
     this.categories = await this.$store.dispatch('fetchMyCategories');

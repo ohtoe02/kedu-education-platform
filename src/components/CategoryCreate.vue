@@ -20,16 +20,19 @@
           <img
               v-tooltip="{text: 'Нажмите, чтоб загрузить заставку'}"
               loading="lazy"
+              :class="{'invalid-img': (v$.imgDataUrl.$dirty && v$.imgDataUrl.required.$invalid)}"
               class="responsive-img image-set"
               @click="showCropper"
               width="350"
+              style="transition: 200ms ease-in all; filter: drop-shadow(0 0 4px rgba(0, 0, 0, .4))"
               :src="imgDataUrl
               ? imgDataUrl
-              : 'https://firebasestorage.googleapis.com/v0/b/kids-edu-platform.appspot.com/o/default%2Fpictures%2Fplaceholder.png?alt=media&token=636f6141-4df4-4ab3-b088-177311a0650a'"
+              : require('../assets/img/placeholder.png')"
               alt=""
           >
           <div class="input-field">
             <input
+                :disabled="uploading"
                 id="name"
                 type="text"
                 v-model="title"
@@ -48,13 +51,13 @@
         </div>
 
         <div class="input-field cat-row">
-          <textarea id="textarea1" class="materialize-textarea"></textarea>
+          <textarea :disabled="uploading" v-model="description" id="textarea1" class="materialize-textarea"></textarea>
           <label for="textarea1">Описание</label>
         </div>
 
         <div class="input-field cat-row">
           <div ref="chips" class="chips chips-placeholder">
-            <input id="tags" placeholder="Добавьте тэг" v-model="currentTag" @keydown.space.enter="addChip">
+            <input :disabled="uploading" id="tags" placeholder="Добавьте тэг" v-model="currentTag" @focusout="addChip" @keydown.space.enter="addChip">
           </div>
         </div>
 
@@ -62,6 +65,7 @@
           <p v-if="isTeacher">
             <label>
               <input
+                  :disabled="uploading"
                   class="with-gap"
                   name="type"
                   type="checkbox"
@@ -71,8 +75,8 @@
             </label>
           </p>
 
-          <button class="btn waves-effect confirm-button waves-light" type="submit">
-            Создать
+          <button class="btn waves-effect confirm-button waves-light" type="submit" :disabled="uploading">
+            {{buttonText}}
             <i class="material-icons right">send</i>
           </button>
         </div>
@@ -98,7 +102,9 @@ export default {
       isPublic: false,
       tags: [],
       imgDataUrl: '',
-      currentTag: ''
+      currentTag: '',
+      uploading: false,
+      description: ''
     }
   },
   validations: {
@@ -119,7 +125,8 @@ export default {
       this.currentTag = ''
     },
     showCropper() {
-      this.show = !this.show
+      if (!this.uploading)
+        this.show = !this.show
     },
     cropSuccess(imgDataUrl, field){
       this.imgDataUrl = imgDataUrl;
@@ -131,12 +138,16 @@ export default {
       }
 
       try {
+        this.uploading = true
         const category = await this.$store.dispatch('createCategory', {
           title: this.title,
           isPublic: this.isPublic,
           tags: this.tags.map(i => i.tag),
-          file: this.imgDataUrl
+          file: this.imgDataUrl,
+          description: this.description
         })
+        this.uploading = false
+        this.description = ''
         this.title = ''
         this.isPublic = false
         this.imgDataUrl = null
@@ -167,6 +178,11 @@ export default {
   computed: {
     isTeacher() {
       return this.$store.getters.info.teacher;
+    },
+    buttonText() {
+      if (this.uploading)
+        return 'Загружается'
+      return 'Создать'
     }
   },
   watch: {
@@ -178,3 +194,9 @@ export default {
   }
 }
 </script >
+
+<style scoped>
+.invalid-img {
+  border: 2px solid red;
+}
+</style>

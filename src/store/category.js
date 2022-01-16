@@ -2,7 +2,7 @@ import {getDatabase, ref, get, child, update, set, push, remove} from "firebase/
 
 export default {
     actions: {
-        async createCategory({dispatch, commit}, {title, isPublic, file, tags}) {
+        async createCategory({dispatch, commit}, {title, isPublic, file, tags, description}) {
             try {
                 const uid = await dispatch('getUid');
                 //Создать категорию с полями title и limit по адресу users/uid/categories
@@ -10,12 +10,13 @@ export default {
                     title,
                     author: uid,
                     isPublic,
-                    tags
+                    tags,
+                    description
                 })
                 await set(ref(getDatabase(), `users/${uid}/categories/${category.key}`), category.key)
                 const catFile = await dispatch('uploadCroppedFile', {path: `categories/${category.key}`, file})
-                dispatch('updateCategory', {title, author: uid, isPublic, tags, file: catFile, id: category.key})
-                return {title, author: uid, isPublic, tags, file: catFile, id: category.key}
+                dispatch('updateCategory', {title, author: uid, isPublic, tags, file: catFile, id: category.key, description})
+                return {title, author: uid, isPublic, tags, file: catFile, id: category.key, description}
             } catch (e) {
                 commit('setError', e)
                 throw e
@@ -59,7 +60,7 @@ export default {
                 throw e
             }
         },
-        async updateCategory({dispatch, commit}, {id, title, isPublic, tags, file}) {
+        async updateCategory({dispatch, commit}, {id, title, isPublic, tags, file, description}) {
             try {
                 const uid = await dispatch('getUid');
                 const db = ref(getDatabase())
@@ -69,7 +70,8 @@ export default {
                     author: uid,
                     file,
                     isPublic,
-                    tags
+                    tags,
+                    description
                 })
             } catch (e) {
                 commit('setError', e)

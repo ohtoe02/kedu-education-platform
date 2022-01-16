@@ -1,8 +1,8 @@
 <template >
   <form class="card auth-card" @submit.prevent="processRegister">
-    <div class="card-content">
-      <span class="card-title">Регистрация</span>
-      <div class="input-field">
+    <div class="card-content" style="padding: 32px 80px !important;">
+      <span class="card-title" style="margin-bottom: 32px; line-height: 0"><img src="../assets/img/logo.png" alt=""></span>
+      <div class="input-field" style="margin-bottom: 24px">
         <input
             id="email"
             type="text"
@@ -21,7 +21,7 @@
             v-else-if="(v$.email.$dirty && v$.email.required.$invalid)"
         >Введите Email</small>
       </div>
-      <div class="input-field">
+      <div class="input-field" style="margin-bottom: 24px">
         <input
             id="password"
             type="password"
@@ -56,7 +56,7 @@
             v-if="v$.username.$dirty && v$.username.required.$invalid"
         >Введите имя</small>
       </div>
-      <p>
+      <p class="reg-checkbox" style="margin: 16px 0 12px 0">
         <label>
           <input type="checkbox" v-model="agree"/>
           <span :class="{
@@ -65,29 +65,26 @@
           }">С правилами согласен</span>
         </label>
       </p>
-      <hr>
-      <p>
-        <label>
-          <input type="checkbox" v-model="teacher"/>
-          <span :class="{submit: teacher}">Я преподаватель</span>
-        </label>
-      </p>
-    </div>
-    <div class="card-action">
-      <div>
-        <button
-            class="btn waves-effect light-blue waves-light auth-submit"
-            type="submit"
-        >
-          Зарегистрироваться
-          <i class="material-icons right">send</i>
-        </button>
-      </div>
 
-      <p class="center">
-        Уже есть аккаунт?
-        <router-link class="light-blue-text" to="/login">Войти!</router-link>
-      </p>
+      <div class="card-action" style="padding: 0; margin: auto; background: transparent">
+          <button type="submit" class="login-button" style="background: #00A3FF; border: none; margin-bottom: 24px !important">
+            <span class="login-button-text">Регистрация</span>
+          </button>
+          <!--        <button-->
+          <!--          class="btn light-blue waves-effect waves-light auth-submit"-->
+          <!--          type="submit"-->
+          <!--        >-->
+          <!--          <strong>Войти</strong>-->
+          <!--          <i class="material-icons right">send</i>-->
+          <!--        </button>-->
+
+        <div class="divider" style="height: 2px" />
+
+        <p class="center" style="margin: 24px 0 0 0 !important">
+          Уже есть аккаунт?
+          <router-link class="light-blue-text" to="/login">Войти!</router-link>
+        </p>
+      </div>
     </div>
   </form>
 </template >
@@ -100,6 +97,7 @@ import {email, required, minLength} from "@vuelidate/validators"
 export default {
   name: 'register',
   setup() {
+    document.title = `Регистрация`
     return { v$: useVuelidate() }
   },
   data() {
@@ -141,3 +139,32 @@ export default {
 }
 
 </script >
+
+<style scoped>
+
+.reg-checkbox {
+  text-align: left;
+}
+
+input {
+  border: solid 1px #303B40 !important;
+  border-radius: 4px !important;
+  padding: 0 8px !important;
+  box-sizing: border-box !important;
+  -moz-box-sizing: border-box !important;
+  -webkit-box-sizing: border-box !important;
+}
+
+label {
+  padding: 0 10px 0 10px !important;
+}
+
+.card-content>.input-field>input:last-of-type {
+  margin: 0 !important;
+}
+
+.input-field>label:not(.label-icon).active {
+  transform: translateY(-20px);
+  transform-origin: 0 0;
+}
+</style>

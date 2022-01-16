@@ -5,7 +5,7 @@
     </div>
     <section>
       <Loader v-if="loading"/>
-      <div v-else>
+      <div class="container" v-else>
         <CategoryCreate @created="addNewCategory" />
 
 <!--        <CategoryEdit-->
@@ -27,7 +27,7 @@ import CategoryEdit from "@/components/CategoryEdit";
 export default {
   name: 'categories',
   setup() {
-    document.title = 'Создать коллекцию'
+    document.title = 'Создать урок'
   },
   data() {
     return {
@@ -37,6 +37,8 @@ export default {
     }
   },
   async mounted() {
+    if (this.$store.getters.info.childMode)
+      this.$router.replace('/planning')
     this.categories = await this.$store.dispatch('fetchMyCategories');
     this.loading = false
   },

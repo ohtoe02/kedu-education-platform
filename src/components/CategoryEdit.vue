@@ -1,8 +1,13 @@
 <template >
   <div>
     <div >
-      <div class="">
-        <form @submit.prevent="editCategory" class="options-input">
+      <div class="container">
+        <form
+            @submit.prevent="editCategory"
+            class="options-input"
+            style="padding: 2rem; background-color: white; border-radius: 8px; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .2))"
+
+        >
           <div class="picture-and-inputs cat-row">
             <img height="250" width="250" class="responsive-img category-preview" :src="picture ? picture : ''" alt="">
 
@@ -21,13 +26,18 @@
             </div>
           </div>
 
+          <div class="input-field cat-row">
+            <textarea v-model="description" id="textarea1" class="materialize-textarea"></textarea>
+            <label for="textarea1">Описание</label>
+          </div>
+
           <div class="cat-row">
             <div ref="chips" class="chips chips-initial">
               <input v-model="currentTag" placeholder="Тэги" @keydown.space="addChip">
             </div>
           </div>
 
-          <p class="cat-row">
+          <p class="cat-row" v-if="this.$store.getters.info.teacher">
             <label>
               <input
                   class="with-gap"
@@ -73,7 +83,8 @@ export default {
       isPublic: true,
       tags: [],
       currentTag: '',
-      picture: null
+      picture: null,
+      description: ''
     }
   },
   validations: {
@@ -105,7 +116,8 @@ export default {
           title: this.title,
           tags: this.tags.map(i => i.tag),
           isPublic: this.isPublic,
-          file: this.picture
+          file: this.picture,
+          description: this.description
         }
         await this.$store.dispatch('updateCategory', categoryData)
         this.$message('Категория была обновлена')
@@ -115,9 +127,12 @@ export default {
     }
   },
   async mounted() {
+    if (this.$store.getters.info.childMode)
+      this.$router.replace('/planning')
     this.category = await this.$store.dispatch('fetchCategoryById', {id: this.catId})
     setTimeout(() => {
       this.title = this.category.title
+      this.description = this.category.description
       this.picture = this.category.file
       this.isPublic = this.category.isPublic
       const tags = this.category.tags

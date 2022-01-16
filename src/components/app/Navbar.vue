@@ -8,18 +8,19 @@
       </div>
 
       <ul class="right hide-on-small-and-down">
-        <li>
+        <li style="min-width: 200px">
           <a
               class="dropdown-trigger black-text"
               href="#"
               data-target="dropdown"
               ref="dropdown"
+              style="text-align: center"
           >
-            <strong>{{ username }}</strong>
-            <i class="material-icons right">arrow_drop_down</i>
+            <strong class="main-dark" style="font-size: 20px; font-weight: 900">{{ username }}</strong>
+            <i class="material-icons right main-dark">arrow_drop_down</i>
           </a>
 
-          <ul id='dropdown' class='dropdown-content'>
+          <ul id='dropdown' class='dropdown-content' >
             <li v-if="isTeacher">
               <router-link to="/planning" class="black-text">
                 <i class="material-icons">dashboard_customize</i>Мои уроки

@@ -35,14 +35,126 @@ body {
 }
 
 .background {
-    height: 780px;
+    height: 100%;
     width: 100%;
     position: fixed;
-    background: url("https://firebasestorage.googleapis.com/v0/b/kids-edu-platform.appspot.com/o/default%2Fpictures%2Fallbacks-min.png?alt=media&token=1c6e8d38-e2be-4d82-b79c-a29fa5741741") no-repeat center;
+    background: url("img/allbacks-min.png");
+    /*background: url("https://firebasestorage.googleapis.com/v0/b/kids-edu-platform.appspot.com/o/default%2Fpictures%2Fallbacks-min.png?alt=media&token=1c6e8d38-e2be-4d82-b79c-a29fa5741741") no-repeat center;*/
     background-size: cover;
-    opacity: 40%;
+    z-index: -9999;
 }
 
+.first-page-layout {
+    display: grid;
+    height: 100vh;
+    width: 100%;
+    grid-template-columns: minmax(300px, 1fr) minmax(600px, 2fr);
+}
+
+.left-login {
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background: #FFF;
+}
+
+.right-login {
+    position: relative;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url("img/right_bg.png") no-repeat center;
+    background-size: cover;
+    height: 100%;
+    width: 100%;
+}
+
+.right-login:before {
+    content: '';
+    position: absolute;
+    background: linear-gradient(90deg, #00A3FF 0%, rgba(0, 163, 255, 0.4) 100%);
+    /*box-shadow: -2px 0 2px #00A3FF;*/
+    backdrop-filter: blur(8px);
+    height: 100%;
+    width: 100%;
+    background-size: cover;
+}
+
+.login-info {
+    width: 500px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.login-info div {
+    margin: 0;
+}
+
+.login-info-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 20px;
+    line-height: 20px;
+    margin: 8px 0 !important;
+
+    text-align: center;
+
+    color: #190061;
+}
+
+.login-info-title {
+    flex-wrap: wrap;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 42px;
+    line-height: 40px;
+
+    text-align: center;
+
+    margin: 8px 0 !important;
+
+    color: #190061;
+}
+
+.login-button-text {
+    font-family: "Roboto", sans-serif;
+    user-select: none;
+    cursor: pointer;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 32px;
+
+    color: #FFFFFF;
+}
+
+.login-button {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 16px 0;
+    height: 64px;
+    margin: 8px 0 !important;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.4));
+    transition: 200ms ease-in-out;
+
+    background: #190061;
+    border-radius: 8px;
+}
+
+.login-button:hover {
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.55));
+}
 
 .empty-layout {
     display: -webkit-flex;
@@ -59,7 +171,7 @@ body {
 }
 
 .auth-card {
-    width: 500px
+    width: 600px
 }
 
 .auth-submit {
@@ -76,7 +188,11 @@ input.valid:not([type]), input.valid:not([type]):focus, input.valid[type=text]:n
 }
 
 .select-wrapper input.select-dropdown {
-    color: var(--main-dark);
+    color: black;
+}
+
+.select-wrapper input.select-dropdown:focus {
+    border-bottom: 1px solid var(--main-blue);
 }
 
 .dropdown-content li>a, .dropdown-content li>span {
@@ -120,7 +236,7 @@ input.valid:not([type]), input.valid:not([type]):focus, input.valid[type=text]:n
     width: 100%;
     height: 64px !important;
     padding: 0 2rem;
-    z-index: 1000
+    z-index: 10000
 }
 
 .nav-wrapper {
@@ -166,6 +282,7 @@ h1 {
     font-weight: 900;
     font-size: 96px;
     margin: 0;
+    z-index: 9999;
 }
 
 h2 {
@@ -317,7 +434,7 @@ h5 {
 
 .card {
     max-width: content-box;
-    border-radius: 0.5rem;
+    border-radius: 8px;
     display: block;
     box-sizing: content-box;
     text-align: center;
@@ -346,7 +463,18 @@ h5 {
     float: right;
 }
 
+.input-field>input:not(.chips>input), .input-field>textarea {
+    border: solid 1px #303B40 !important;
+    border-radius: 4px !important;
+    padding-left: 8px;
+    padding-right: 8px;
+    box-sizing: border-box !important;
+    -moz-box-sizing: border-box !important;
+    -webkit-box-sizing: border-box !important;
+}
+
 .category-preview {
+    border-radius: 4px;
     filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.4));
     object-fit: cover;
     object-position: center;
@@ -392,6 +520,7 @@ h5 {
 
 .image-set {
     filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.2));
+    border-radius: 8px;
     cursor: pointer;
     transition: all ease-in 0.2s;
 
@@ -418,10 +547,30 @@ h5 {
 
 .catalog {
     display: grid;
+    width: 70%;
     margin: auto;
-    grid-template-columns: repeat(auto-fit, 300px);
+    grid-template-columns: repeat(4, 300px);
+    /*grid-template-columns: repeat(auto-fit, 300px);*/
     gap: 20px;
     padding: 20px;
+}
+
+@media screen and (max-width: 1760px ){
+    .catalog {
+        grid-template-columns: repeat(3, 300px);
+    }
+}
+
+@media screen and (max-width: 1400px ){
+    .catalog {
+        grid-template-columns: repeat(2, 300px);
+    }
+}
+
+@media screen and (max-width: 1040px ){
+    .catalog {
+        grid-template-columns: repeat(1, 300px);
+    }
 }
 
 .child-categories {
@@ -430,7 +579,6 @@ h5 {
     justify-content: space-around;
     grid-template-columns: repeat(auto-fit, 300px);
     max-width: 80%;
-    grid-template-rows: repeat(2, auto);
     gap: 20px;
     padding: 20px;
 }
@@ -553,6 +701,7 @@ input:not([type]):focus:not([readonly])+label, input[type=text]:not(.browser-def
     align-items: center;
     gap: 100px;
     grid-template-columns: 2fr 8fr 2fr;
+    grid-template-rows: 65vh;
     margin: auto;
     box-sizing: content-box;
 }
@@ -584,8 +733,13 @@ input:not([type]):focus:not([readonly])+label, input[type=text]:not(.browser-def
 
 .filters {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
     margin: auto;
     width: 50%;
+}
+
+.button-disabled {
+    filter: saturate(0);
+    cursor: default !important;
 }

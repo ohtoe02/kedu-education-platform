@@ -3,7 +3,7 @@
 <!--    <iframe :width="width" :height="height" :src="url" title="YouTube video player" frameborder="0" allow="autoplay" allowfullscreen></iframe>-->
 <!--  </div>-->
 
-  <video :width="width" class="responsive-video video-player" preload="metadata" controls>
+  <video :width="width" class="responsive-video video-player" :autoplay="true" preload="metadata" :key="videoURL" style="height: auto" controls>
     <source :src="videoURL" type="video/mp4">
   </video>
 </template >
@@ -17,14 +17,6 @@ export default {
     height: 504,
     width: 900
   }),
-  methods: {
-
-  },
-  // computed: {
-  //   width() {
-  //     return this.height * (1920 / 1080)
-  //   }
-  // },
   mounted() {
     this.url = this.videoURL || 'https://www.youtube.com/embed/Mi12nUC2QKo'
   }

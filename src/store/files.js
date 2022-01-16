@@ -2,22 +2,22 @@ import {getStorage, ref, uploadBytes, getDownloadURL, deleteObject, uploadString
 
 export default {
     actions: {
-        async uploadFile({dispatch, commit}, {path, file}) {
+        async uploadFile({dispatch, commit}, {path, file, name}) {
             try {
                 const uid = await dispatch('getUid');
                 const storage = ref(getStorage(), `/${uid}/${path}/${file.name}`);
                 const uploaded = await uploadBytes(storage, file);
                 const resPath = await getDownloadURL(uploaded.ref);
-                return {path: resPath, name: file.name}
+                return {path: resPath, name}
             } catch (e) {
                 commit('setError', e)
                 throw e
             }
         },
-        async uploadCroppedFile({dispatch, commit}, {path, file}) {
+        async uploadCroppedFile({dispatch, commit}, {path, file, name}) {
             try {
                 const uid = await dispatch('getUid');
-                const storage = ref(getStorage(), `/${uid}/${path}`);
+                const storage = ref(getStorage(), `/${uid}/${path}/${name}`);
                 const uploaded = await uploadString(storage, file, "data_url");
                 return await getDownloadURL(uploaded.ref);
             } catch (e) {

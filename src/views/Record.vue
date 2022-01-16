@@ -12,8 +12,8 @@
           field="img"
           v-model="show"
           @crop-success="cropSuccess"
-          :width="350"
-          :height="350"
+          :width="200"
+          :height="200"
           langType="ru"
           :noCircle="true"
           img-format="png"
@@ -24,33 +24,56 @@
         style="padding: 2rem; background-color: white; border-radius: 8px; filter: drop-shadow(0 4px 4px rgba(0, 0, 0, .2))"
     >
       <div class="picture-and-inputs cat-row">
+<!--        <img-->
+<!--            loading="lazy"-->
+<!--            class="responsive-img image-set"-->
+<!--            @click="showCropper"-->
+<!--            width="350"-->
+<!--            :src="imgDataUrl-->
+<!--              ? imgDataUrl-->
+<!--              : 'https://firebasestorage.googleapis.com/v0/b/kids-edu-platform.appspot.com/o/default%2Fpictures%2Fvideo_placeholder.png?alt=media&token=d3120780-bff6-4c14-8007-1473c5c6722b'"-->
+<!--            alt=""-->
+<!--        >-->
         <img
             loading="lazy"
             class="responsive-img image-set"
+            :class="{'invalid-img': (v$.imgDataUrl.$dirty && v$.imgDataUrl.required.$invalid)}"
             @click="showCropper"
             width="350"
+            style="transition: 200ms ease-in all; filter: drop-shadow(0 0 4px rgba(0, 0, 0, .4))"
             :src="imgDataUrl
               ? imgDataUrl
-              : 'https://firebasestorage.googleapis.com/v0/b/kids-edu-platform.appspot.com/o/default%2Fpictures%2Fvideo_placeholder.png?alt=media&token=d3120780-bff6-4c14-8007-1473c5c6722b'"
+              : require('../assets/img/video_placeholder.png')"
             alt=""
         >
         <div>
           <div class="input-field" style="margin: 0 0 32px 0">
             <input
-                :class="{invalid: v$.title.$dirty && v$.title.required.$invalid}"
+                :class="{invalid: (v$.title.$dirty && v$.title.required.$invalid) || (v$.title.$dirty && v$.title.maxLength.$invalid)}"
                 id="title"
                 type="text"
                 v-model="title"
+                :disabled="uploading"
             >
             <label>Название</label>
             <span
                 class="helper-text invalid"
                 v-if="v$.title.$dirty && v$.title.required.$invalid"
-            >Введите название записи</span>
+            >Введите название записи
+            </span>
+            <span
+                class="helper-text invalid"
+                v-if="v$.title.$dirty && v$.title.maxLength.$invalid"
+            >Название должно быть менее {{ v$.title.maxLength.$params.max }} символов. Сейчас {{title.length}}
+            </span>
           </div>
 
           <div class="input-field" >
-            <select ref="select" v-model="category">
+            <select :disabled="uploading" ref="select" v-model="category">
+              <optgroup label='Добавить в "мои видео"'>
+                <option value="empty">Мои видео</option>
+              </optgroup>
+              <optgroup label="Добавить в коллекцию">
               <option
                   class="main-dark"
                   v-for="c in categories"
@@ -58,6 +81,7 @@
                   :key="c.id"
                   :value="c.id"
               >{{ c.title }}</option>
+              </optgroup>
             </select>
             <label class="main-dark">Выберите коллекцию</label>
           </div>
@@ -66,9 +90,11 @@
 
       <div class="input-field ">
         <div class="file-field input-field">
-          <div class="btn light-blue right">
+          <div class="btn light-blue right" :class="{'button-disabled': uploading}">
             <span>Выбрать файл</span>
             <input
+                :disabled="uploading"
+                :class="{'button-disabled': uploading}"
                 ref="file"
                 @change="handleFileUpload"
                 type="file"
@@ -77,6 +103,7 @@
           </div>
           <div class="file-path-wrapper" style="padding: 0 10px 0 0">
             <input
+                :disabled="uploading"
                 id="text-file"
                 class="file-path validate main-dark"
                 type="text"
@@ -92,32 +119,34 @@
         </div>
       </div>
       <div class="cat-row">
-        <div v-if="role" >
-            <label >
-              <input
-                  class="with-gap"
-                  name="type"
-                  type="radio"
-                  value="private"
-                  v-model="type"
-              />
-              <span>Приватно</span>
-            </label>
-            <label>
-              <input
-                  class="with-gap"
-                  name="type"
-                  type="radio"
-                  value="public"
-                  v-model="type"
-              />
-              <span>Публично</span>
-            </label>
-        </div>
+<!--        <div v-if="role" >-->
+<!--            <label >-->
+<!--              <input-->
+<!--                  :disabled="uploading"-->
+<!--                  class="with-gap"-->
+<!--                  name="type"-->
+<!--                  type="radio"-->
+<!--                  value="private"-->
+<!--                  v-model="type"-->
+<!--              />-->
+<!--              <span>Приватно</span>-->
+<!--            </label>-->
+<!--            <label>-->
+<!--              <input-->
+<!--                  :disabled="uploading"-->
+<!--                  class="with-gap"-->
+<!--                  name="type"-->
+<!--                  type="radio"-->
+<!--                  value="public"-->
+<!--                  v-model="type"-->
+<!--              />-->
+<!--              <span>Публично</span>-->
+<!--            </label>-->
+<!--        </div>-->
 
 
-        <button class="btn waves-effect waves-light light-blue" type="submit" >
-          Создать
+        <button class="btn waves-effect waves-light light-blue" type="submit" :disabled="uploading">
+          {{ buttonText }}
           <i class="material-icons right">send</i>
         </button>
       </div>
@@ -130,7 +159,7 @@
 
 <script>
 import useVuelidate  from "@vuelidate/core";
-import { required, minValue } from "@vuelidate/validators";
+import { required, maxLength } from "@vuelidate/validators";
 import {mapGetters} from 'vuex'
 
 export default {
@@ -146,26 +175,26 @@ export default {
       categories: [],
       category: null,
       type: 'private',
-      // amount: 1,
       title: '',
       currentFile: null,
       role: true,
       imgDataUrl: '',
-      show: false
+      show: false,
+      uploading: false
     }
   },
   computed: {
     ...mapGetters(['info']),
-    // canCreateRecord() {
-    //   if (this.type === 'private')
-    //     return true
-    //
-    //   return this.info.bill >= this.amount
-    // }
+    buttonText() {
+      if (this.uploading)
+        return 'Загружается'
+      return 'Создать'
+    }
   },
   methods: {
     showCropper() {
-      this.show = !this.show
+      if (!this.uploading)
+        this.show = !this.show
     },
     cropSuccess(imgDataUrl, field){
       this.imgDataUrl = imgDataUrl;
@@ -180,6 +209,7 @@ export default {
       try {
         // const videoRef = await this.$store.dispatch('uploadFile', {path: 'records/', file: this.currentFile})
         // const imageRef = await this.$store.dispatch('uploadCroppedFile', {path: 'records', file: this.imgDataUrl})
+        this.uploading = true
         await this.$store.dispatch('createRecord', {
         categoryId: this.category,
         title: this.title,
@@ -188,12 +218,9 @@ export default {
         image: this.imgDataUrl,
         date: new Date().toJSON()
       })
-        // const bill = this.type === 'private'
-        //     ? this.info.bill + this.amount
-        //     : this.info.bill - this.amount
 
-        // await this.$store.dispatch('updateInfo', {bill})
         this.$message('Запись была успешно добавлена')
+        this.uploading = false
         this.v$.$reset()
         this.type = 'private'
         this.imgDataUrl = ''
@@ -206,6 +233,8 @@ export default {
     },
   },
   async mounted() {
+    if (this.$store.getters.info.childMode)
+      this.$router.replace('/planning')
     this.role = await this.$store.dispatch('fetchRoleInfo')
     this.categories = await this.$store.dispatch('fetchMyCategories');
     this.loading = false;
@@ -222,10 +251,35 @@ export default {
     }
   },
   validations: {
-    title: { required },
-    // amount: { minValue: minValue(1), required },
-    currentFile: {required}
+    title: { required, maxLength: maxLength(40) },
+    currentFile: {required},
+    imgDataUrl: {required},
   },
 }
 
 </script>
+
+<style scoped>
+
+.select-dropdown li.optgroup>span {
+  color: black !important;
+}
+
+.invalid-img {
+  border: 2px solid red;
+}
+
+label {
+  padding: 0 10px 0 10px;
+}
+
+.card-content>.input-field>input:last-of-type {
+  margin: 0 !important;
+}
+
+.input-field>label:not(.label-icon).active {
+  transform: translateY(-20px);
+  transform-origin: 0 0;
+}
+
+</style>
